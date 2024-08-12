@@ -1,0 +1,236 @@
+/*
+=========================================================
+* Dash UI - Bootstrap 5 Admin & Dashboard Theme
+=========================================================
+* Product Page: https://codescandy.com/dashui/index.html
+* Copyright 2023 Codescandy (https://codescandy.com/)
+* Designed and coded by https://codescandy.com
+========================================================= */
+
+// Inter Fonts
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+// Font Awesome
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css");
+
+// Material Design Icons
+@import url("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css");
+
+// Feathers CSS for Before Icon
+// @import url("/fonts/feather-icons/feather.css");
+
+// Bootstrap functions
+@import "~bootstrap/scss/functions";
+
+// User Variables
+@import "user-variables";
+
+// theme variables
+@import "theme/variables";
+
+//utilities
+@import "theme/utilities";
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// Theme
+@import "theme/theme";
+
+// User
+@import "user";
+
+.heading-permalink {
+    color: transparent;
+    margin-left: -2rem;
+
+    &:hover {
+        color: transparent;
+    }
+
+    &::before {
+        color: rgba(82, 95, 127, 0);
+        content: "#";
+    }
+
+    &:hover:before {
+        color: $primary;
+    }
+}
+
+.btn-gray {
+    color: $white;
+    background-color: $gray-800;
+
+    &:hover {
+        color: $gray-800;
+        border: 1px solid $gray-800;
+    }
+}
+
+.table-responsive {
+    overflow: visible;
+}
+
+.btn.multiselectdropdown {
+    background-color: transparent;
+    border: 1px solid #dfe3e8;
+    color: #637381;
+    text-align: start;
+
+    &::after {
+        color: #000;
+        line-height: 1;
+        width: 1rem;
+        font-size: 1.35rem;
+    }
+
+    &:hover,
+    &:active {
+        background-color: inherit;
+        color: inherit;
+    }
+}
+
+.btn.multiselectdropdown.show {
+    &:active {
+        background-color: inherit;
+        color: inherit;
+    }
+
+    &:focus {
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(98, 75, 255, 0.25);
+        border-color: #b1a5ff;
+    }
+}
+
+.multiselectdropdownMenu {
+    padding-left: 1rem;
+}
+
+.dates {
+    font-size: 14px;
+}
+
+.accordionWrap button {
+    padding-block: .25rem;
+}
+.nav__links{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 8px;
+    text-decoration: none;
+    padding: 15px 25px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s;
+    &:hover{
+      
+        color: #ffffff;
+        background:linear-gradient(109.26deg,rgba(10,102,194,.2) 18.5%,rgba(0,181,209,.2) 91.33%);
+        transform: scale(1.1);
+     }
+    p{
+        margin: 0;
+    }
+    color: #a5a5a5;
+
+
+}
+
+.nav__selected{
+    color: #ffffff;
+    background:linear-gradient(109.26deg,rgba(10,102,194,.2) 18.5%,rgba(0,181,209,.2) 91.33%);
+    transform: scale(1.1);
+}
+.nav__wrap{
+    overflow: hidden;
+}
+.pagination-container {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.pagination-wrap {
+    max-width: 350px;
+ 
+   display: flex;
+   flex-direction: row;
+   overflow-x: auto;
+}
+.form-control{
+    color: #000 !important;
+}
+.partial-selected .form-check-input {
+   background: #624BFF;
+}
+// .pagination-container .pagination {
+//     display: inline-flex;
+//     flex-wrap: nowrap;
+//     align-items: center;
+//     justify-content: center;
+  
+// }
+
+// .pagination-item {
+//     min-width: 40px; /* Adjust this width as needed */
+//     text-align: center;
+// }
+.table-responsive-xl{
+    overflow-x: auto;
+    min-height: 250px;
+}
+
+// .more{
+//     a{
+//         color: #000 !important;
+//     }
+//     :hover{
+//         a{
+//             color: #ffffff !important;
+//         }
+//     }
+// }
+.more-btn a:first-child {
+    color: #000 !important;
+}
+
+.more-btn a:first-child:hover {
+    color: #ffffff !important;
+}
+/***custom css***/
+.more-btn a:first-child:hover
+{
+    color:#624bff !important;
+}
+.navbar-vertical.navbar{
+    overflow-x:hidden;
+}
+.nav__selected{
+    margin-top:6px;
+    margin-bottom:6px;
+}
+.nav__links .dropdown-arrow {
+	margin-left: auto;
+	transition: transform 0.3s ease;
+}
+
+.navbar-vertical .submenu .nav__links.nav__selected
+{
+    font-size:16px !important;
+}
+
+.navbar-vertical .submenu .nav__links.nav__selected {
+    font-size: 11px !important;
+    display: inline-flex;
+    padding-left: 40px;
+    margin-top: 0;
+    background:linear-gradient(109.26deg, rgba(10, 102, 194, 0.1) 18.5%, rgba(0, 181, 209, 0.1) 91.33%);
+}
+/***custom css***/
