@@ -52,7 +52,9 @@ const MultiCheckTopicSelection = ({
     const regions = selectionString.split("|");
     regions.forEach((regionStr) => {
       const [region, ...countries] = regionStr.split("#");
-      selection[region] = {};
+      if (!selection[region]) {
+        selection[region] = {};
+      }
       countries.forEach((country) => {
         selection[region][country] = true;
       });

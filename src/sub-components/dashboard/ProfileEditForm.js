@@ -99,7 +99,7 @@ const ProfileEditForm = ({
      
       if (data?.data?.statusCode == 200) {
         setUserCreated(true)
-        toast.success("User updated!", {
+        toast.success("User updated successfully!!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
