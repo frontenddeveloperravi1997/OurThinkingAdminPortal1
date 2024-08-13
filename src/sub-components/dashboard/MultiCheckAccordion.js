@@ -43,12 +43,15 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
     const regions = selectionString.split("|");
     regions.forEach((regionStr) => {
       const [region, ...countries] = regionStr.split("#");
+      
       selection[region] = {};
+      //console.log('selection initial selection--',selection);
       countries.forEach((country) => {
         selection[region][country] = true;
       });
     });
-    return selection;
+    //console.log('selection---',selection);
+    return selection;    
   };
 
   useEffect(() => {
@@ -62,6 +65,7 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
   const areAllCountriesChecked = (newState = checkedRegions) => {
     return Object.keys(regionsList).every(region => {
       //console.log('areAllCountriesChecked region--',region);
+       
         return regionsList[region].every(country => newState[region]?.[country.relatedCountry]);
     });
 };
@@ -70,7 +74,6 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
     //console.log('region checked items--',region);
     const countries = regionsList[region];
     if (!countries) return false;
-
     return countries.every(
       (country) => checkedRegions[region]?.[country.relatedCountry]
     );
@@ -79,7 +82,9 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
   const isAnyCountrySelected = (region) => {
     const countries = regionsList[region];
     if (!countries) return false;
-
+    //console.log('regionsList--',regionsList);
+    //console.log('region--',region);
+    //console.log((country) => checkedRegions[region]?.[country.relatedCountry]);
     return countries.some(
       (country) => checkedRegions[region]?.[country.relatedCountry]
     );
@@ -144,7 +149,7 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
 
   const updateSelectionString = (newCheckedRegions) => {
     const selectionString = generateSelectionString(newCheckedRegions);
-    console.log('countries selection string--',selectionString)
+    //console.log('countries selection string--',selectionString)
     setValue("countryId", selectionString);
   };
 

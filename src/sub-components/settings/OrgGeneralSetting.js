@@ -108,7 +108,6 @@ const handleSaveDomainName = (id) => {
   setEditingDomain({ id: "", value: "" });
 };
 
-
 const handleDeleteDomain = (id) => {
   setAssociateDomain((prev) => {
     const updatedDomains = prev.filter((domain) => domain.id !== id);
@@ -116,7 +115,7 @@ const handleDeleteDomain = (id) => {
     return updatedDomains;
   });
 };
-//console.log("associateDomains",associateDomains)
+console.log("associateDomains---",associateDomains);
 /* all the functions for Domain names  ends*/
 
 
@@ -191,13 +190,33 @@ const handleDeleteDomain = (id) => {
 // };
 /* all the functions for Address  ends*/
 
+// useEffect(() => {
+//   if (defaultDomainNames) {
+//     const transformData = (data) => {
+//       return data
+//         .split('|') // Split the string into an array
+//         .map((item) => item.trim()) // Remove extra whitespace
+//         .filter((item, index, self) => item && self.indexOf(item) === index) // Remove empty strings and duplicates
+//         .map((item) => ({
+//           id: item,
+//           value: item,
+//           isDisabled: true,
+//         }));
+//     };
+//     setAssociateDomain(transformData(defaultDomainNames));
+//   } else {
+//     setAssociateDomain([]);
+//   }
+// }, [defaultDomainNames]);
+
+
 useEffect(() => {
-  if (defaultDomainNames) {
+  if (typeof defaultDomainNames === 'string' && defaultDomainNames.trim() !== '') {
     const transformData = (data) => {
       return data
-        .split('|') // Split the string into an array
-        .map((item) => item.trim()) // Remove extra whitespace
-        .filter((item, index, self) => item && self.indexOf(item) === index) // Remove empty strings and duplicates
+        .split('|') 
+        .map((item) => item.trim()) 
+        .filter((item, index, self) => item && self.indexOf(item) === index) 
         .map((item) => ({
           id: item,
           value: item,
@@ -209,6 +228,7 @@ useEffect(() => {
     setAssociateDomain([]);
   }
 }, [defaultDomainNames]);
+
 
 // useEffect(()=>{
 //   if (defaultAssociateAddress) {
@@ -385,8 +405,8 @@ useEffect(() => {
                   <div className="mt-3 d-flex flex-column gap-1">
                    {associateDomains?.length>0 &&associateDomains?.map((item,index)=>{
                     return(
-                      <div key={index} className="mt-3 d-flex flex-row gap-2 align-items-center">
-                         <Form.Control
+                  <div key={index} className="mt-3 d-flex flex-row gap-2 align-items-center">
+                  <Form.Control
                   
                   type="text"
                  

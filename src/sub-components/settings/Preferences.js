@@ -28,14 +28,25 @@ const Preferences = ({
   defaultRoles=[],
   comparativeList
 }) => {
+ 
   // Ref to track if the effect has already run
   const hasEffectRun = useRef(false);
   const productPermissionRef = useRef(false);
   const defaultValues = getValues();
+  const initialSelection = {};
+defaultValues.countryId.split('|').forEach(item => {
+  const [region, country] = item.split('#');
+  if (!initialSelection[region]) {
+    initialSelection[region] = {};
+  }
+  initialSelection[region][country] = true;
+});
+//console.log('initialSelection--',initialSelection);
+  
   const selectedLanguage = defaultValues?.language;
   const selectedFirmContacts = defaultValues?.firmContact && new Set(defaultValues?.firmContact?.split('|'));
 
-//  const defaultProductPermission =defaultValues.productPermissions
+//  const defaultProductPermission=defaultValues.productPermissions
   const languageOptions = [
     { value: "English", label: "English" },
     { value: "Hindi", label: "Hindi" },

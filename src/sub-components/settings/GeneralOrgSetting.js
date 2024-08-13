@@ -7,7 +7,7 @@ import MultiSelectDropdown from "@/sub-components/dashboard/MultiSelectDropdown"
 const GeneralOrgSetting = ({ organization }) => {
   const [formData, setFormData] = useState({
     organizationName: "",
-    availableDomains: "",
+    organizationDomains: "",
     status: "",
     associatedAddress: "",
     organizationCategory: "",
@@ -21,7 +21,7 @@ const GeneralOrgSetting = ({ organization }) => {
     if (organization) {
       setFormData({
         organizationName: organization.organizationName || "",
-        availableDomains: organization.availableDomains || "",
+        organizationDomains: organization.organizationDomains || "",
         status: organization.status || "",
         associatedAddress: organization.associatedAddress || "",
         organizationCategory: organization.organizationCategory || "",

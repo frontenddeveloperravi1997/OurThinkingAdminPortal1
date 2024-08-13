@@ -81,7 +81,8 @@ export const fetchExceptionList = async (pageNumber, searchTerm) => {
 
   export const fetchWhitelist = async (pageNumber, searchTerm) => {
     // Start with the base URL
-    let url = `${baseUrl}/api/WhiteListDomain`;
+    //let url = `${baseUrl}/api/WhiteListDomain`;
+    let url = `${baseUrl}/api/OrganizationWhitelistDomain`;
   
     // Initialize an array to hold query parameters
     let queryParams = [];
