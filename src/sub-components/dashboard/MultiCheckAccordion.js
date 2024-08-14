@@ -145,7 +145,7 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
 
   const updateSelectionString = (newCheckedRegions) => {
     const selectionString = generateSelectionString(newCheckedRegions);
-    console.log('countries selection string--',selectionString)
+    //console.log('countries selection string--',selectionString)
     setValue("countryId", selectionString);
   };
 

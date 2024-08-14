@@ -164,7 +164,7 @@ const MultiCheckTopicSelection = ({
 
   const updateSelectionString = (newCheckedRegions) => {
     const selectionString = generateSelectionString(newCheckedRegions);
-    console.log('selectionString--',selectionString);
+    //console.log('selectionString--',selectionString);
     setValue("topicId", selectionString);
   };
 
