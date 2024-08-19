@@ -13,7 +13,6 @@ export const DashboardMenu = [
 	  title: 'Organization',
 	  icon: <i className="fa fa-users" aria-hidden="true" />,
 	  link: '/organization',
-	  className: 'organization', // Added className here
 	  subMenu: [
 		{
 		  id: uuid(),

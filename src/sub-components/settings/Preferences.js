@@ -160,16 +160,7 @@ defaultValues.countryId.split('|').forEach(item => {
   }, [updatedLanguageList, selectedLanguage]);
 
 
- useEffect(()=>{
-  if(roleList?.length>0){
-    const convertingIntoFormat = roleList?.map((item) => ({
-      value: item?.roleID,
-      label: item?.roleName,
-    }));
-    setUpdatedRoleList(convertingIntoFormat);
-  }
 
- },[roleList])
 
  useEffect(()=>{
   if(orgKeyContactList?.length>0){
@@ -198,30 +189,39 @@ defaultValues.countryId.split('|').forEach(item => {
  },[defaultPermission]);
 
  useEffect(()=>{
-if(defaultRoles && defaultRoles?.length>0){
-  const convertingIntoFormat = defaultRoles?.map((item) => ({
-    value: item?.roles?.roleID,
-    label: item?.roles?.roleName,
-  }));
-  setSelectedRoles(convertingIntoFormat);
-  setValue("usersInRoles",convertingIntoFormat) 
-}
- },[defaultRoles]);
- useEffect(() => {
-  if (!selectedFirmContacts) return;
-
-  // Filter and transform the contacts
-  const selected = orgKeyContactList
-    .filter(contact => selectedFirmContacts.has(contact.contactsID))
-    .map(contact => ({
-      value: contact.contactsID,
-      label: contact.contactName
+  if(roleList?.length>0){
+    const convertingIntoFormat = roleList?.map((item) => ({
+      value: item?.roleID,
+      label: item?.roleName,
     }));
+    setUpdatedRoleList(convertingIntoFormat);
+  }
 
-  // Update the state with selected contacts
-  setSelectedKeyContacts(selected);
-}, [orgKeyContactList, selectedFirmContacts]);
+ },[])
+
+ useEffect(()=>{
+    if(defaultRoles && defaultRoles?.length>0){
+      const convertingIntoFormat = defaultRoles?.map((item) => ({
+        value: item?.roles?.roleID,
+        label: item?.roles?.roleName,
+      }));
+      setSelectedRoles(convertingIntoFormat);
+      setValue("usersInRoles",convertingIntoFormat) 
+    }
+  },[]);
  
+  useEffect(() => {
+    if (!selectedFirmContacts) return;
+    // Filter and transform the contacts
+    const selected = orgKeyContactList
+      .filter(contact => selectedFirmContacts.has(contact.contactsID))
+      .map(contact => ({
+        value: contact.contactsID,
+        label: contact.contactName
+      }));
+    setSelectedKeyContacts(selected);
+  }, []);
+  
   return (
     <Row className="mb-8">
       <Col xl={3} lg={4} md={12} xs={12}>

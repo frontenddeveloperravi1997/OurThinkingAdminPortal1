@@ -173,6 +173,22 @@ const getRolesData = async () => {
   return data;
 };
 
+const getWhiteListedDomain = async (domain) => {
+  const response = await fetch(`${baseUrl}/api/Organization/IsDomainExistsInOrgnizationWhiteList?domainName=${domain}`, {
+    method: "GET",
+    headers: {
+      Api_Key: apiKey,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  const data = await response.json();
+  return data;
+};
+
 
 const updateUserRole = async (payload) => {
   const response = await fetch(`${baseUrl}/api/User/AddMultiRoleToMultiUser`, {
@@ -365,6 +381,7 @@ export {
   deleteUserById,
   getDropdownData,
   getEADDropdownData,
+  getWhiteListedDomain,
   commonQuery,
   getRolesData,
   exportAllUsers,

@@ -26,6 +26,10 @@ const OrganizationForm = ({
       const [showCancelPop,setShowCancelPop] = useState(false)
       const [productPermissionsArr,setProductPermissionsArr]= useState([]);
       const [orgCreated,setOrgCreated] = useState(false)
+
+      const [organizationDomains,setOrganizationDomains] = useState([]);
+      const [updateOrganizationWhitelistDomain,setUpdateOrganizationWhitelistDomain] = useState([]);
+      const [deleteOrganizationWhitelistDomain,setDeleteOrganizationWhitelistDomain] = useState([]);
 // mutation call
 
 const {
@@ -100,7 +104,7 @@ const {
   onSuccess(data, variables, context) {
     if(data?.data?.statusCode == 200){
       setOrgCreated(true)
-      toast.success('Organization updated!', {
+      toast.success('Organization updated successfully!!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -248,6 +252,9 @@ const {
                 Country: data?.countryId,
                 Languages: data?.language,
               },
+              organizationDomains,
+              updateOrganizationWhitelistDomain,
+              deleteOrganizationWhitelistDomain
             
         }
         )
@@ -276,7 +283,10 @@ const {
                 Languages: data?.language,
               },
             
-            organizationID:org?.organizationID
+            organizationID:org?.organizationID,
+            organizationDomains,
+            updateOrganizationWhitelistDomain,
+            deleteOrganizationWhitelistDomain
         })
         }
     
@@ -325,12 +335,20 @@ const {
         errors={errors}
         setValue={setValue}
         getValues={getValues}
+        organizationID={org.organizationID}
         orgCategoryList={orgCategoryList}
         clearErrors={clearErrors}
         method={method}
+
+        organizationDomains={organizationDomains} 
+        setOrganizationDomains={setOrganizationDomains}
+        updateOrganizationWhitelistDomain={updateOrganizationWhitelistDomain}
+        setUpdateOrganizationWhitelistDomain={setUpdateOrganizationWhitelistDomain}
+        deleteOrganizationWhitelistDomain={deleteOrganizationWhitelistDomain}
+        setDeleteOrganizationWhitelistDomain={setDeleteOrganizationWhitelistDomain}
       />
       <Preferences
-       frequencyList={frequencyList}
+        frequencyList={frequencyList}
         emailFrequency={[]}
         regionsList={regionsList}
         register={register}
@@ -346,7 +364,7 @@ const {
         isKeyContact={true}
         defaultPermission={org?.comparativeGuides}
         comparativeList={comparativeList}
-        />
+        /> 
       <Row className="mb-8">
         <Col md={{ offset: 3, span: 11 }} xs={12} className="mt-2 d-flex gap-4">
           <Button

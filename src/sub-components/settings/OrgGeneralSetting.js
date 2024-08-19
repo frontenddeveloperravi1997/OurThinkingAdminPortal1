@@ -2,7 +2,17 @@ import { useState, useEffect,memo } from "react";
 import { Col, Row, Form, Card,InputGroup,Button  } from "react-bootstrap";
 import Image from "next/image";
 import Select from "react-select";
-const OrgGeneralSetting = ({  register, errors,setValue,getValues,orgCategoryList, clearErrors,method }) => {
+import {  toast } from 'react-toastify';
+import { getWhiteListedDomain } from "@/app/api/user";
+const OrgGeneralSetting = ({  
+  register, errors,setValue,getValues,orgCategoryList, clearErrors,method, organizationID,
+  organizationDomains,
+  setOrganizationDomains,
+  updateOrganizationWhitelistDomain,
+  setUpdateOrganizationWhitelistDomain,
+  deleteOrganizationWhitelistDomain,
+  setDeleteOrganizationWhitelistDomain
+ }) => {
     const defaultValues = getValues();
     const defaultDomainNames = getValues()?.domainNames;
     const defaultAssociateAddress = getValues()?.associateAddresses;
@@ -16,6 +26,7 @@ const [selectedOrgCategory,setSelectedOrgCategory]= useState(() =>{
 });
 // const [orgStatus,setOrgStatus] = useState(defaultValues?.status);
 const [associateDomains,setAssociateDomain] = useState([]);
+
 const [associateDomainInput,setAssociateDomainInput] = useState("")
 const [editingDomain, setEditingDomain] = useState({ id: "", value: "" });
 // const [associateAddress,setAssociateAddress] = useState([]);
@@ -56,7 +67,32 @@ const updateSingleDomainName = (domainName) => {
 const handleDomainNameInput = (e)=>{
   setAssociateDomainInput(e.target.value)
 };
-const handleAddDomainName = () => {
+const handleAddDomainName = async () => {
+     // check if the domain is whitelisted
+    if(await getWhiteListedDomain(associateDomainInput)){
+      toast.error('Domain Already Exist!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      return ;
+    }
+    
+
+    setOrganizationDomains((prevDomains) => [
+      ...prevDomains,
+      { 
+        id:0,
+        organizationId:organizationID, 
+        domainName:associateDomainInput,
+        createdDate: new Date().toISOString()
+      }
+    ]);
 
   if (associateDomainInput !== "") {
     setAssociateDomain((prev) => {
@@ -73,7 +109,32 @@ const handleAddDomainName = () => {
   }
 }
 
-const handleEditDomainName = (id, value) => {
+const handleEditDomainName = async (id, value) => {
+
+  // if(! await getWhiteListedDomain(id)){
+  //   toast.error('Domain Does not Exist, you can only edit existing domain!', {
+  //     position: "top-right",
+  //     autoClose: 5000,
+  //     hideProgressBar: false,
+  //     closeOnClick: true,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     progress: undefined,
+  //     theme: "colored",
+  //   });
+  //   return ;
+  // }
+
+  setUpdateOrganizationWhitelistDomain((prevDomains) => [
+    ...prevDomains,
+    { 
+      id:0,
+      organizationId:organizationID, 
+      domainName:id,
+      createdDate: new Date().toISOString()
+    }
+  ]);
+
   setEditingDomain({ id, value });
   setAssociateDomain((prev) =>
     prev.map((domain) =>
@@ -84,7 +145,22 @@ const handleEditDomainName = (id, value) => {
 const handleDomainValueChange = (e) => {
   setEditingDomain({ ...editingDomain, value: e.target.value });
 };
+
 const handleSaveDomainName = (id) => {
+
+  // let whiteListDomain = getWhiteListedDomain(id)
+
+  setOrganizationDomains((prevDomains) => [
+    ...prevDomains,
+    { 
+      id:0,
+      organizationId:organizationID, 
+      domainName:id,
+      createdDate: new Date().toISOString()
+    }
+  ]);
+
+
   setAssociateDomain((prev) => {
     const updatedDomains = prev.map((domain) => {
       if (domain.id === id) {
@@ -104,14 +180,26 @@ const handleSaveDomainName = (id) => {
   setEditingDomain({ id: "", value: "" });
 };
 
-const handleDeleteDomain = (id) => {
+const handleDeleteDomain = (id, item = null) => {
+  // check if what you want to delete exist?
+
+  setDeleteOrganizationWhitelistDomain((prevDomains) => [
+    ...prevDomains,
+    { 
+      id:0,
+      organizationId:organizationID, 
+      domainName:id,
+      createdDate: new Date().toISOString()
+    }
+  ]);
+
   setAssociateDomain((prev) => {
     const updatedDomains = prev.filter((domain) => domain.id !== id);
     updateSingleDomainName(updatedDomains);
     return updatedDomains;
   });
 };
-console.log("associateDomains---",associateDomains);
+// console.log("associateDomains---",associateDomains);
 
 
 
@@ -262,7 +350,7 @@ useEffect(() => {
                   style={{cursor:"pointer"}}
                 />)}
               
-                 <Image style={{cursor:"pointer"}} alt="avatar" width={20}  height={20} src='/images/icons/delete.png' onClick={() => handleDeleteDomain(item.id)}  />
+                 <Image style={{cursor:"pointer"}} alt="avatar" width={20}  height={20} src='/images/icons/delete.png' onClick={() => handleDeleteDomain(item.id, item)}  />
                  
                       </div>
                     )

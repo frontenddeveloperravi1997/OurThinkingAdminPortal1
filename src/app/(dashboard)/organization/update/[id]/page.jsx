@@ -152,8 +152,9 @@ const UpdateOrg = ({ params }) => {
       />
       <p>Status : {organization.status}</p>
       <PageHeading heading={organization.organizationName} />
-    <OrganizationForm   method="editOrg"
-    org={organization}
+    <OrganizationForm   
+          method="editOrg"
+          org={organization}
           regionsList={regionsList}
           topicList={topicList}
           languageList={languageList}

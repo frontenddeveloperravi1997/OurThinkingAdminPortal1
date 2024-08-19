@@ -243,10 +243,3 @@ export const isExceptionListDomainExists = async (domainName) => {
   return response.data;
 };
 
-// export const isOrganizationListDomainExists = async (domainName) => {
-//   const response = await axios.get(`${baseUrl}/api/Organization/IsDomainExists`, {
-//       params: { domainName: domainName },
-//       headers: { 'Api_Key': apiKey }
-//   });
-//   return response.data;
-// };

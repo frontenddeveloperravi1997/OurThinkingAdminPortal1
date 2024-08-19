@@ -212,7 +212,7 @@
 .navbar-vertical.navbar{
     overflow-x:hidden;
 }
-.nav__selected{
+.nav__links{
     margin-top:6px;
     margin-bottom:6px;
 }
@@ -230,7 +230,20 @@
     font-size: 11px !important;
     display: inline-flex;
     padding-left: 40px;
-    margin-top: 0;
-    background:linear-gradient(109.26deg, rgba(10, 102, 194, 0.1) 18.5%, rgba(0, 181, 209, 0.1) 91.33%);
+    background:linear-gradient(109.26deg, rgba(10, 102, 194, 0.2) 18.5%, rgba(0, 181, 209, 0.2) 91.33%);
+}
+.navbar-vertical .submenu{
+    font-size: 11px !important;
+    display: inline-flex;
+    width:100%;
+}
+.navbar-vertical .submenu a
+{
+    display:inline-flex;
+    padding-left:40px;
+}
+.submenu .nav__links{
+    margin-top:0.2px !important;
+    margin-bottom:0.2px !important;
 }
 /***custom css***/
