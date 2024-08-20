@@ -96,7 +96,7 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
     }, []);
 
     return (
-        <Modal show={show} onHide={onClose}>
+        <Modal show={show} onHide={onClose} centered  size="lg">
             <Modal.Header closeButton>
                 <Modal.Title>Change Bulk Tagging</Modal.Title>
             </Modal.Header>

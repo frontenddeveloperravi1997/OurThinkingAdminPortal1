@@ -11,7 +11,6 @@ import { isWhiteListDomainExists } from '@/app/api/datalist';
 import { isBlackListDomainExists } from '@/app/api/datalist';
 import { isExceptionListDomainExists } from '@/app/api/datalist';
 
-
 const SystemForm = ({pageName,isEdit,domain={}}) => {
 const router = useRouter()
 const [domainCreated,setDomainCreated] = useState(false)
@@ -41,15 +40,12 @@ const [domainCreated,setDomainCreated] = useState(false)
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "colored",
-           
+            theme: "colored",           
             });
-            setTimeout(() => {
-            
+            setTimeout(() => {            
               router.back()
                  }, 5000);
-         }else{
-        
+         }else{        
           toast.success('Domain name created successfully!! ', {
             position: "top-right",
             autoClose: 5000,
@@ -58,15 +54,12 @@ const [domainCreated,setDomainCreated] = useState(false)
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "colored",
-           
+            theme: "colored",           
             });
-            setTimeout(() => {
-            
+            setTimeout(() => {            
               router.back()
                  }, 5000);
          }
-
       }else{
         toast.error('Oops something went wrong!', {
           position: "top-right",
@@ -76,11 +69,9 @@ const [domainCreated,setDomainCreated] = useState(false)
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "colored",
-         
+          theme: "colored",         
           });
-      }
-    
+      }    
     },
     onError(error, variables, context) {
       toast.error('Oops something went wrong!', {
@@ -91,13 +82,10 @@ const [domainCreated,setDomainCreated] = useState(false)
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "colored",
-       
+        theme: "colored",       
         });
     },
-  });
-
- 
+  }); 
     const {
         register,
         handleSubmit,
@@ -107,8 +95,7 @@ const [domainCreated,setDomainCreated] = useState(false)
       } = useForm({
         defaultValues: {
           domainName:domain?.domainName||"",
-          status:domain?.status||""
-    
+          status:domain?.status||""    
         },
       });
     const defaultValues = getValues();

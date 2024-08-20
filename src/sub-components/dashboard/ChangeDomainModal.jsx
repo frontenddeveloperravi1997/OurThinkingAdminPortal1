@@ -107,7 +107,7 @@ const ChangeDomainModal = ({ show, onClose, checkedUsers }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose}>
+    <Modal show={show} onHide={onClose}  centered  size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Change user roles</Modal.Title>
       </Modal.Header>

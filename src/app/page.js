@@ -68,7 +68,7 @@ useEffect(()=>{
         {/* Card body */}
         <Card.Body className="p-6">
           <div className="mb-4">
-            <h1 style={{color:"#624BFF", fontWeight:"600"}}>Our Thinking Admin</h1>
+            <h1 style={{color:"#624BFF", fontWeight:"600"}}>Sign in to access the admin panel</h1>
             <p className="mb-6">Sign in to access Admin Panel.</p>
           </div>
           {/* Form */}
