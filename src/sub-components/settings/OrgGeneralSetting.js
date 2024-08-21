@@ -105,6 +105,18 @@ const handleAddDomainName = async () => {
       }
     ]);
 
+    if(method!=="editOrg"){
+      setUpdateOrganizationWhitelistDomain((prevDomains) => [
+        ...prevDomains,
+        { 
+          id:updateOrganizationWhitelistDomain.length,
+          organizationId:0, 
+          domainName:associateDomainInput,
+          createdDate: new Date().toISOString()
+        }
+      ]);
+    }
+
   if (associateDomainInput !== "") {
     setAssociateDomain((prev) => {
       const updatedDomains = [...prev, {

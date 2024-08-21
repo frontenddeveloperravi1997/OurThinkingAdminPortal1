@@ -223,11 +223,6 @@ const OrganizationForm = ({
       return newPermission;
     });
 
-       // Set the constructed array to the state
-  setUpdateOrganizationWhitelistDomain(whitelistDomains);
-
-  // Log the `updateOrganizationWhitelistDomain` data
-  console.log("updateOrganizationWhitelistDomain:--", whitelistDomains);
 
     const isLanguage = data?.language === "";
     const isTopic = data?.topicId === "";
@@ -279,7 +274,7 @@ const OrganizationForm = ({
                   Languages: data?.language,
                 },
           organizationDomains,
-          updateOrganizationWhitelistDomain: whitelistDomains,
+          updateOrganizationWhitelistDomain,
           deleteOrganizationWhitelistDomain,
         });
       } else if ((method = "editOrg")) {
@@ -308,7 +303,7 @@ const OrganizationForm = ({
               },
             
               organizationID: org?.organizationID,
-              updateOrganizationWhitelistDomain: whitelistDomains,
+              updateOrganizationWhitelistDomain,
               deleteOrganizationWhitelistDomain,
         });
       }
