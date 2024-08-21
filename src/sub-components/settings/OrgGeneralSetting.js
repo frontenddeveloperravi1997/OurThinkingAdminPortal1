@@ -14,7 +14,7 @@ const OrgGeneralSetting = ({
   setDeleteOrganizationWhitelistDomain
  }) => {
     const defaultValues = getValues();
-    const defaultDomainNames = getValues()?.domainNames;
+    const defaultDomainNames = getValues()?.organizationDomains;
     const defaultAssociateAddress = getValues()?.associateAddresses;
     const [updatedOrgCategoryList, setUpdatedOrgCategoryList] = useState([]);
 const [selectedOrgCategory,setSelectedOrgCategory]= useState(() =>{
@@ -29,9 +29,7 @@ const [associateDomains,setAssociateDomain] = useState([]);
 
 const [associateDomainInput,setAssociateDomainInput] = useState("")
 const [editingDomain, setEditingDomain] = useState({ id: "", value: "" });
-// const [associateAddress,setAssociateAddress] = useState([]);
-// const [associateAddressInput,setAssociateAddressInput] = useState("")
-// const [editingAddress, setEditingAddress] = useState({ id: "", value: "" });
+
 const [selectedAutoLogin, setSelectedAutoLogin] = useState(
   defaultValues?.isAutoLogin
 );
@@ -82,6 +80,19 @@ const handleAddDomainName = async () => {
       });
       return ;
     }
+    if(organizationDomains.find((domain) => domain.domainName.toLowerCase() == associateDomainInput.toLowerCase())){
+        toast.error('Domain Already Exists in lists!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        return ;
+    }
     
 
     setOrganizationDomains((prevDomains) => [
@@ -107,24 +118,11 @@ const handleAddDomainName = async () => {
     // Moved outside the setState function
     setAssociateDomainInput("");
   }
+
 }
 
+
 const handleEditDomainName = async (id, value) => {
-
-  // if(! await getWhiteListedDomain(id)){
-  //   toast.error('Domain Does not Exist, you can only edit existing domain!', {
-  //     position: "top-right",
-  //     autoClose: 5000,
-  //     hideProgressBar: false,
-  //     closeOnClick: true,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     progress: undefined,
-  //     theme: "colored",
-  //   });
-  //   return ;
-  // }
-
   setUpdateOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
@@ -146,24 +144,22 @@ const handleDomainValueChange = (e) => {
   setEditingDomain({ ...editingDomain, value: e.target.value });
 };
 
-const handleSaveDomainName = (id) => {
-
+const handleSaveDomainName = (item) => {
+  
   // let whiteListDomain = getWhiteListedDomain(id)
-
-  setOrganizationDomains((prevDomains) => [
+  setUpdateOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
-      id:0,
+      id:item.id,
       organizationId:organizationID, 
-      domainName:id,
+      domainName:editingDomain.value,
       createdDate: new Date().toISOString()
     }
   ]);
 
-
   setAssociateDomain((prev) => {
     const updatedDomains = prev.map((domain) => {
-      if (domain.id === id) {
+      if (domain.id === item.id) {
         const newDomain = { ...domain, isDisabled: true };
         // Only update the value if editingDomain.value is valid
         if (editingDomain.value !== undefined && editingDomain.value !== null && editingDomain.value !== "") {
@@ -180,21 +176,22 @@ const handleSaveDomainName = (id) => {
   setEditingDomain({ id: "", value: "" });
 };
 
-const handleDeleteDomain = (id, item = null) => {
+const handleDeleteDomain = (item) => {
   // check if what you want to delete exist?
 
   setDeleteOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
-      id:0,
+      id:item.id,
       organizationId:organizationID, 
-      domainName:id,
+      domainName:item.value,
       createdDate: new Date().toISOString()
     }
   ]);
+ 
 
   setAssociateDomain((prev) => {
-    const updatedDomains = prev.filter((domain) => domain.id !== id);
+    const updatedDomains = prev.filter((domain) => domain.id !== item.id);
     updateSingleDomainName(updatedDomains);
     return updatedDomains;
   });
@@ -204,15 +201,11 @@ const handleDeleteDomain = (id, item = null) => {
 
 
 useEffect(() => {
-  if (typeof defaultDomainNames === 'string' && defaultDomainNames.trim() !== '') {
+  if (defaultDomainNames.length) {
     const transformData = (data) => {
-      return data
-        .split('|') 
-        .map((item) => item.trim()) 
-        .filter((item, index, self) => item && self.indexOf(item) === index) 
-        .map((item) => ({
-          id: item,
-          value: item,
+        return data.map((item) => ({
+          id: item.id,
+          value: item.domainName,
           isDisabled: true,
         }));
     };
@@ -223,20 +216,21 @@ useEffect(() => {
 }, [defaultDomainNames]);
 
 
+  const handleOrgCategorySelect = (selectedOption) => {
+    setSelectedOrgCategory(selectedOption);
+    setValue("orgCategory", selectedOption);
+  };
 
-    const handleOrgCategorySelect = (selectedOption) => {
-        setSelectedOrgCategory(selectedOption);
-        setValue("orgCategory", selectedOption);
-      };
-    useEffect(() => {
-        if (orgCategoryList?.length > 0) {
-          const convertingIntoFormat = orgCategoryList?.map((item) => ({
-            value: item?.organizationCategoryID,
-            label: item?.categoryName,
-          }));
-          setUpdatedOrgCategoryList(convertingIntoFormat);
-        }
-      }, [orgCategoryList]);
+  useEffect(() => {
+    if (orgCategoryList?.length > 0) {
+      const convertingIntoFormat = orgCategoryList?.map((item) => ({
+        value: item?.organizationCategoryID,
+        label: item?.categoryName,
+      }));
+      setUpdatedOrgCategoryList(convertingIntoFormat);
+    }
+  }, [orgCategoryList]);
+
   return (
     <Row className="mb-8">
     <Col xl={3} lg={3} md={12} xs={12}>
@@ -305,6 +299,7 @@ useEffect(() => {
                   className="col-sm-3 col-form-label form-label"
                   htmlFor="domainName"
                 >
+                  {/* Organization Domain names */}
                   Associated Domain names
                 </Form.Label>
                 <Col md={8} xs={12}>
@@ -346,11 +341,11 @@ useEffect(() => {
                   width={20}
                   height={20}
                   src='/images/icons/correct.png'
-                  onClick={() => handleSaveDomainName(item.id)}
+                  onClick={() => handleSaveDomainName(item)}
                   style={{cursor:"pointer"}}
                 />)}
               
-                 <Image style={{cursor:"pointer"}} alt="avatar" width={20}  height={20} src='/images/icons/delete.png' onClick={() => handleDeleteDomain(item.id, item)}  />
+                 <Image style={{cursor:"pointer"}} alt="avatar" width={20}  height={20} src='/images/icons/delete.png' onClick={() => handleDeleteDomain(item)}  />
                  
                       </div>
                     )
