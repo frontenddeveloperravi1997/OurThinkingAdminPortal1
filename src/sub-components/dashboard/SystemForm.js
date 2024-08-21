@@ -170,7 +170,6 @@ pauseOnFocusLoss
 draggable
 pauseOnHover
 theme="colored"
-
 />
 <CommonModal
    show={showCancelPop}

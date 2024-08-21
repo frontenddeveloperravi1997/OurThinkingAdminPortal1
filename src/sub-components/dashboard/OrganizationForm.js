@@ -288,10 +288,7 @@ const {
             updateOrganizationWhitelistDomain,
             deleteOrganizationWhitelistDomain
         })
-        }
-    
-      
-    
+      }  
     }
   };
 
