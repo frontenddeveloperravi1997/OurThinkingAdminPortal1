@@ -205,6 +205,14 @@ const OrganizationForm = ({
     //     console.error("Error checking domain existence:", error);
     //     // Handle error scenario, e.g., show an error message to the user
     // }
+    const whitelistDomains = [
+      {
+        id: 0,
+        domainName: "string",
+        organizationId: org?.organizationID || 0,
+        createdDate: new Date().toISOString(),
+      }
+    ];
     const updatedPermissions = productPermissionsArr?.map((permission) => {
       const newPermission = { ...permission };
       data?.productPermission?.forEach((item) => {
@@ -214,6 +222,12 @@ const OrganizationForm = ({
       });
       return newPermission;
     });
+
+       // Set the constructed array to the state
+  setUpdateOrganizationWhitelistDomain(whitelistDomains);
+
+  // Log the `updateOrganizationWhitelistDomain` data
+  console.log("updateOrganizationWhitelistDomain:--", whitelistDomains);
 
     const isLanguage = data?.language === "";
     const isTopic = data?.topicId === "";
@@ -265,7 +279,7 @@ const OrganizationForm = ({
                   Languages: data?.language,
                 },
           organizationDomains,
-          updateOrganizationWhitelistDomain,
+          updateOrganizationWhitelistDomain: whitelistDomains,
           deleteOrganizationWhitelistDomain,
         });
       } else if ((method = "editOrg")) {
@@ -293,7 +307,9 @@ const OrganizationForm = ({
                 Languages: data?.language,
               },
             
-            organizationID:org?.organizationID
+              organizationID: org?.organizationID,
+              updateOrganizationWhitelistDomain: whitelistDomains,
+              deleteOrganizationWhitelistDomain,
         });
       }
     }
