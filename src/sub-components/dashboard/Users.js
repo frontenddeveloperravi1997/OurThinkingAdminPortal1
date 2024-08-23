@@ -334,7 +334,8 @@ const closeChangeBulkTagging = () =>{
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
-      return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
+      //return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
+      return await commonQuery("Delete", `/api/User/${id}`, data);
     },
     onSuccess(data, variables, context) {
  
@@ -576,7 +577,7 @@ const closeChangeBulkTagging = () =>{
           Edit Profile
         </Dropdown.Item>
       
-        <Dropdown.Item
+        {/* <Dropdown.Item
           eventKey="2"
       disabled={Boolean(emailVerify === "Verified")}
           onClick={() => handleResetPassword(userEmail)}
@@ -586,7 +587,7 @@ const closeChangeBulkTagging = () =>{
         <Dropdown.Item     onClick={() => handleResetPassword(userEmail)} eventKey="3">
         {isPendingReset ? "Sending..." : "Reset Password"}
           
-          </Dropdown.Item> 
+          </Dropdown.Item>  */}
       </Dropdown.Menu>
     </Dropdown>
   );
@@ -618,11 +619,21 @@ variant="outline-dark"
           
           </Dropdown.Item>
        
+          <Dropdown.Item
+            eventKey="2"
+          >
+            Add to group
+            </Dropdown.Item>
 
+          <Dropdown.Item
+            eventKey="3"
+          >
+            Archive
+            </Dropdown.Item>  
       
           <Dropdown.Item
             onClick={handleChangeMultipleDomain}
-            eventKey="3"
+            eventKey="4"
           >
            Change User Roles
           </Dropdown.Item>
@@ -632,14 +643,14 @@ variant="outline-dark"
       
           <Dropdown.Item
          onClick={handleMultipleDelete}
-            eventKey="4"
+            eventKey="5"
           >
             Delete
           </Dropdown.Item>
 
           <Dropdown.Item
             onClick={handleChangeBulkTagging}
-            eventKey="5"
+            eventKey="6"
           >
            User Bulk Tagging
           </Dropdown.Item>

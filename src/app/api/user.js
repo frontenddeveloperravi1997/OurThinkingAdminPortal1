@@ -74,7 +74,8 @@ const getUserById = async (Id) => {
 };
 
 const deleteUserById = async (Id) => {
-  const response = await axios.delete(`${baseUrl}/api/User/DeleteMultiUser`, {
+  //const response = await axios.delete(`${baseUrl}/api/User/DeleteMultiUser`, {
+    const response = await axios.delete(`${baseUrl}/api/User/${Id}`, { 
     headers: { Api_Key: apiKey },
   });
   return response.data;
