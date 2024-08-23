@@ -14,7 +14,7 @@ const OrgGeneralSetting = ({
   setDeleteOrganizationWhitelistDomain 
  }) => {
     const defaultValues = getValues();
-    console.log('defaultValues-->',defaultValues);
+    //console.log('defaultValues-->',defaultValues);
     const defaultDomainNames = getValues()?.organizationDomains;
     const defaultAssociateAddress = getValues()?.associateAddresses;
     const [updatedOrgCategoryList, setUpdatedOrgCategoryList] = useState([]);
@@ -45,10 +45,10 @@ const booleanOptions = [
 
 
 const handleSelectedIsAutoLogin = (selectedOption) => {
-  console.log('selectedOption--->',selectedOption);
+  //console.log('selectedOption--->',selectedOption);
   setSelectedAutoLogin(selectedOption);
   setValue("isAutoLogin", selectedOption);
-  console.log('isAutoLogin--->',selectedOption);
+  //console.log('isAutoLogin--->',selectedOption);
 };
 const handleSelectedIsInternalOrg = (selectedOption) => {
   setSelectedIsInternalOrg(selectedOption);
@@ -122,31 +122,17 @@ const handleAddDomainName = debounce(async () => {
     //   ]);
     // }
 
-    // if(method==="editOrg"){
-    //   setUpdateOrganizationWhitelistDomain((prevDomains) => [
-    //     ...prevDomains,
-    //     { 
-    //       id:updateOrganizationWhitelistDomain.length,
-    //       organizationId:organizationID, 
-    //       domainName:associateDomainInput,
-    //       createdDate: new Date().toISOString()
-    //     }
-    //   ]);
-    // }
-
-    const newDomain = {
-      id: updateOrganizationWhitelistDomain?.length || 0,
-      organizationId: method === "addOrg" ? 0 : organizationID,
-      domainName: associateDomainInput,
-      createdDate: new Date().toISOString(),
-  };
-
-  if (method === "addOrg" || method === "editOrg") {
+    if(method==="editOrg"){
       setUpdateOrganizationWhitelistDomain((prevDomains) => [
-          ...(prevDomains || []),
-          newDomain,
+        ...prevDomains,
+        { 
+          id:updateOrganizationWhitelistDomain.length,
+          organizationId:organizationID, 
+          domainName:associateDomainInput,
+          createdDate: new Date().toISOString()
+        }
       ]);
-  }
+    }
 
   if (associateDomainInput !== "") {
     setAssociateDomain((prev) => {
@@ -156,7 +142,7 @@ const handleAddDomainName = debounce(async () => {
         value: associateDomainInput
       }];
       updateSingleDomainName(updatedDomains);
-      console.log('updatedDomains-->',updatedDomains);
+      //console.log('updatedDomains-->',updatedDomains);
       return updatedDomains;
     });
     // Moved outside the setState function
@@ -172,85 +158,85 @@ function debounce(func, delay) {
     timeout = setTimeout(() => func.apply(this, args), delay);
   };
 }
-// const handleEditDomainName = async (id, value) => {
-//   // setUpdateOrganizationWhitelistDomain((prevDomains) => [
-//   //   ...prevDomains,
-//   //   { 
-//   //     id:0,
-//   //     organizationId:organizationID, 
-//   //     domainName:id,
-//   //     createdDate: new Date().toISOString()
-//   //   }
-//   // ]);
+const handleEditDomainName = async (id, value) => {
+  // setUpdateOrganizationWhitelistDomain((prevDomains) => [
+  //   ...prevDomains,
+  //   { 
+  //     id:0,
+  //     organizationId:organizationID, 
+  //     domainName:id,
+  //     createdDate: new Date().toISOString()
+  //   }
+  // ]);
 
-//   setEditingDomain({ id, value });
-//   setAssociateDomain((prev) =>
-//     prev.map((domain) =>
-//       domain.id === id ? { ...domain, isDisabled: false } : domain
-//     )
-//   );
-// };
-// const handleDomainValueChange = (e) => {
-//   //setEditingDomain({ ...editingDomain, value: e.target.value });
-//   setEditingDomain((prev) => ({
-//     ...prev,
-//     value: e.target.value,
-//   }));
-// };
+  setEditingDomain({ id, value });
+  setAssociateDomain((prev) =>
+    prev.map((domain) =>
+      domain.id === id ? { ...domain, isDisabled: false } : domain
+    )
+  );
+};
+const handleDomainValueChange = (e) => {
+  //setEditingDomain({ ...editingDomain, value: e.target.value });
+  setEditingDomain((prev) => ({
+    ...prev,
+    value: e.target.value,
+  }));
+};
 
-// const handleSaveDomainName = (item) => {
+const handleSaveDomainName = (item) => {
   
-//   // let whiteListDomain = getWhiteListedDomain(id)
-//   setUpdateOrganizationWhitelistDomain((prevDomains) => [
-//     ...prevDomains,
-//     { 
-//       id:item.id,
-//       organizationId:organizationID, 
-//       domainName:editingDomain.value,
-//       createdDate: new Date().toISOString()
-//     }
-//   ]);
+  // let whiteListDomain = getWhiteListedDomain(id)
+  setUpdateOrganizationWhitelistDomain((prevDomains) => [
+    ...prevDomains,
+    { 
+      id:item.id,
+      organizationId:organizationID, 
+      domainName:editingDomain.value,
+      createdDate: new Date().toISOString()
+    }
+  ]);
 
-//   setAssociateDomain((prev) => {
-//     const updatedDomains = prev.map((domain) => {
-//       if (domain.id === item.id) {
-//         const newDomain = { ...domain, isDisabled: true };
-//         // Only update the value if editingDomain.value is valid
-//         if (editingDomain.value !== undefined && editingDomain.value !== null && editingDomain.value !== "") {
-//           newDomain.value = editingDomain.value;
-//         }
-//         return newDomain;
-//       }
-//       return domain;
-//     });
-//     updateSingleDomainName(updatedDomains);
-//     return updatedDomains;
-//   });
+  setAssociateDomain((prev) => {
+    const updatedDomains = prev.map((domain) => {
+      if (domain.id === item.id) {
+        const newDomain = { ...domain, isDisabled: true };
+        // Only update the value if editingDomain.value is valid
+        if (editingDomain.value !== undefined && editingDomain.value !== null && editingDomain.value !== "") {
+          newDomain.value = editingDomain.value;
+        }
+        return newDomain;
+      }
+      return domain;
+    });
+    updateSingleDomainName(updatedDomains);
+    return updatedDomains;
+  });
 
-//   setEditingDomain({ id: "", value: "" });
-// };
+  setEditingDomain({ id: "", value: "" });
+};
 
-// const handleDeleteDomain = (item) => {
-//   // check if what you want to delete exist?
+const handleDeleteDomain = (item) => {
+  // check if what you want to delete exist?
 
-//   setDeleteOrganizationWhitelistDomain((prevDomains) => [
-//     ...prevDomains,
-//     { 
-//       id:item.id,
-//       organizationId:organizationID, 
-//       domainName:item.value,
-//       createdDate: new Date().toISOString()
-//     }
-//   ]);
+  setDeleteOrganizationWhitelistDomain((prevDomains) => [
+    ...prevDomains,
+    { 
+      id:item.id,
+      organizationId:organizationID, 
+      domainName:item.value,
+      createdDate: new Date().toISOString()
+    }
+  ]);
  
 
-//   setAssociateDomain((prev) => {
-//     const updatedDomains = prev.filter((domain) => domain.id !== item.id);
-//     updateSingleDomainName(updatedDomains);
-//     return updatedDomains;
-//   });
-// };
-console.log("associateDomains---",associateDomains);
+  setAssociateDomain((prev) => {
+    const updatedDomains = prev.filter((domain) => domain.id !== item.id);
+    updateSingleDomainName(updatedDomains);
+    return updatedDomains;
+  });
+};
+//console.log("associateDomains---",associateDomains);
 
 
 
