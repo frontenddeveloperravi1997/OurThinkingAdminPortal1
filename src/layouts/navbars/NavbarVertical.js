@@ -15,7 +15,7 @@ const NavbarVertical = (props) => {
     const isMobile = useMediaQuery({ maxWidth: 767 });
 
     const [openMenu, setOpenMenu] = useState(null);
-
+    
     const handleMenuClick = (id) => {
         if (openMenu === id) {
             setOpenMenu(null);
@@ -27,16 +27,22 @@ const NavbarVertical = (props) => {
     return (
         <Fragment>
             {DashboardMenu.map((item, index) => {
-                const itemName = item.name || ''; 
+                const itemName = item.name || '';
                 const isSelected = location === item.link;
                 const hasSubMenu = item.subMenu && item.subMenu.length > 0;
                 const isSubMenuOpen = openMenu === item.id;
-
-                const shouldShowSubMenu = index === 1 && isSubMenuOpen;
-
-                const isOrganizationItem = itemName.toLowerCase() === 'organization';
-                const linkClassName = `nav__links ${isSelected ? "nav__selected" : ""} ${index === 1 && !isSubMenuOpen && isOrganizationItem ? "organization" : ""}`;
-
+                let shouldShowSubMenu = index === 1 && isSubMenuOpen;
+                const isSubMenuItemSelected = item.subMenu ? item.subMenu.some(subItem => location === subItem.link) : false;
+                let linkClassName = 'nav__links';
+                if (isSelected || isSubMenuItemSelected) {
+                    linkClassName = 'nav__links nav__selected';
+                } else if (isSubMenuOpen && hasSubMenu) {
+                    linkClassName = 'nav__links';
+                } else {
+                    linkClassName = 'nav__links';
+                }
+                
+                
                 return (
                     <Fragment key={item.id}>
                         <Link

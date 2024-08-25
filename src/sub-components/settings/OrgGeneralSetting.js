@@ -456,15 +456,15 @@ useEffect(() => {
      as="textarea" rows={3}
      disabled
    
-     {...register("autoLoginUrl",{
-       required:false,
-       minLength: 2,
-       maxLength:500,
-       pattern: {
-        value: /^(https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[^\s]*)?(\?[^\s]*)?(\#[^\s]*)?$/,
-        message: "Invalid URL"
-          }
-        })}
+    //  {...register("autoLoginUrl",{
+    //    required:false,
+    //    minLength: 2,
+    //    maxLength:500,
+    //    pattern: {
+    //     value: /^(https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[^\s]*)?(\?[^\s]*)?(\#[^\s]*)?$/,
+    //     message: "Invalid URL"
+    //       }
+    //     })}
       />
 {errors.autoLoginUrl && <Form.Control.Feedback type="invalid">Invalid url</Form.Control.Feedback>}
  </Col>

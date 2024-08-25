@@ -36,7 +36,7 @@ export default function DashboardLayout({ children }) {
 	return (
 		<>
 		{inProgress === "startup"?<></>:(	<div id="db-wrapper" className={`${showMenu ? '' : 'toggled'}`}>
-			<div  className="navbar-vertical navbar">
+			<div  className="navbar-vertical navbar py-10">
 				<NavbarVertical
 					showMenu={showMenu}
 					onClick={(value) => setShowMenu(value)}
