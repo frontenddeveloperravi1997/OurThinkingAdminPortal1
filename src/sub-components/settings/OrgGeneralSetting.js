@@ -104,28 +104,28 @@ const handleAddDomainName = debounce(async () => {
     }
     
 
-    setOrganizationDomains((prevDomains) => [
-      ...prevDomains,
-      { 
-        id:0,
-        organizationId:organizationID, 
-        domainName:associateDomainInput,
-        createdDate: new Date().toISOString()
-      }
-    ]);
+    // setOrganizationDomains((prevDomains) => [
+    //   ...prevDomains,
+    //   { 
+    //     id:0,
+    //     organizationId:organizationID, 
+    //     domainName:associateDomainInput,
+    //     createdDate: new Date().toISOString()
+    //   }
+    // ]);
 
-    // if(method==="addOrg"){
-    //   console.log('organizationDomains-->>',organizationDomains);
-    //   setUpdateOrganizationWhitelistDomain((prevDomains) => [
-    //     ...prevDomains,
-    //     { 
-    //       id:updateOrganizationWhitelistDomain.length,
-    //       organizationId:0, 
-    //       domainName:associateDomainInput,
-    //       createdDate: new Date().toISOString()
-    //     }
-    //   ]);
-    // }
+    if(method==="addOrg"){
+      console.log('organizationDomains-->>',organizationDomains);
+      setUpdateOrganizationWhitelistDomain((prevDomains) => [
+        ...prevDomains,
+        { 
+          id:updateOrganizationWhitelistDomain.length,
+          organizationId:0, 
+          domainName:associateDomainInput,
+          createdDate: new Date().toISOString()
+        }
+      ]);
+    }
 
     if(method==="editOrg"){
       setUpdateOrganizationWhitelistDomain((prevDomains) => [
