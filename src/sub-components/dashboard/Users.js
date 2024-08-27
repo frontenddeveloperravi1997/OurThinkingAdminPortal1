@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useMediaQuery } from 'react-responsive';
 import ChangeDomainModal from "./ChangeDomainModal";
 import ChangeBulkTaggingModal from "./ChangeBulkTaggingModal";
+import ChangeMultipleOrganizationModal from "./ChangeMultipleOrganizationModal";
 
 const Users = ({ pageNumber, setTotalPages,itemsDisplayed,totalCount }) => {
   const isMobile = useMediaQuery({
@@ -26,8 +27,9 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [showActionPop, setShowActionPop] = useState(false);
-  const [showDomainPopup,setDomainPop] = useState(false)
-  const [showBulkTaggingPopup,setBulkTaggingPop] = useState(false)
+  const [showDomainPopup,setDomainPop] = useState(false);
+  const [showBulkTaggingPopup,setBulkTaggingPop] = useState(false);
+  const [showMultipleOrganizationPopup,setMultipleOrganizationPop] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     userId: "",
@@ -73,6 +75,10 @@ const handleChangeBulkTagging = () =>{
 const closeChangeBulkTagging = () =>{
   setBulkTaggingPop(false)
 }
+
+const handleChangeMultipleOrganization = () => {
+  setMultipleOrganizationPop(true);
+};
 
 
   const handleFileChange = async (event) => {
@@ -619,21 +625,15 @@ variant="outline-dark"
           
           </Dropdown.Item>
        
-          <Dropdown.Item
+          <Dropdown.Item  onClick={handleChangeMultipleOrganization}
             eventKey="2"
           >
             Add to group
             </Dropdown.Item>
-
-          <Dropdown.Item
-            eventKey="3"
-          >
-            Archive
-            </Dropdown.Item>  
       
           <Dropdown.Item
             onClick={handleChangeMultipleDomain}
-            eventKey="4"
+            eventKey="3"
           >
            Change User Roles
           </Dropdown.Item>
@@ -643,14 +643,14 @@ variant="outline-dark"
       
           <Dropdown.Item
          onClick={handleMultipleDelete}
-            eventKey="5"
+            eventKey="4"
           >
             Delete
           </Dropdown.Item>
 
           <Dropdown.Item
             onClick={handleChangeBulkTagging}
-            eventKey="6"
+            eventKey="5"
           >
            User Bulk Tagging
           </Dropdown.Item>
@@ -665,6 +665,7 @@ variant="outline-dark"
     <>
     <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />
     <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />
+    <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />
       <CommonModal
         show={showActionPop}
         onClose={handleHideActionPop}
