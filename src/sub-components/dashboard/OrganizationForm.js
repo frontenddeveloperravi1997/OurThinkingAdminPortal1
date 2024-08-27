@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, memo } from "react"; 
 import { useForm } from "react-hook-form";
 import { Col, Row, Form, Card, Button } from "react-bootstrap";
 import OrgGeneralSetting from "../settings/OrgGeneralSetting";
@@ -25,13 +25,11 @@ const OrganizationForm = ({
 }) => {
 
   const router = useRouter();
-
   const [showError, setShowError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showCancelPop, setShowCancelPop] = useState(false);
   const [productPermissionsArr, setProductPermissionsArr] = useState([]);
   const [orgCreated, setOrgCreated] = useState(false);
-
   const [organizationDomains, setOrganizationDomains] = useState([]);
   const [
     updateOrganizationWhitelistDomain,
@@ -300,8 +298,7 @@ const OrganizationForm = ({
                 Topics: data?.topicId,
                 Country: data?.countryId,
                 Languages: data?.language,
-              },
-            
+              },            
               organizationID: org?.organizationID,
               updateOrganizationWhitelistDomain,
               deleteOrganizationWhitelistDomain,

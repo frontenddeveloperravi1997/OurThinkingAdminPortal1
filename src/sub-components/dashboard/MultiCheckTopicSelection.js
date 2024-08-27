@@ -18,22 +18,49 @@ const MultiCheckTopicSelection = ({
   //     .join("|");
   // };
 
+  // const generateSelectionString = (checkedRegions) => {
+  //     return Object.keys(checkedRegions)
+  //     .map((region) => {
+  //       // Collect selected countries for the current region
+  //       const selectedCountries = Object.keys(checkedRegions[region])
+  //         .filter((country) => checkedRegions[region][country])
+  //         .map((country) => `${region}#${country}`);
+  
+  //       // Only include the region once and concatenate with the selected countries
+  //       return selectedCountries.length > 0
+  //         ? `${region}|${selectedCountries.join("|")}`
+  //         : '';
+  //     })
+  //     .filter(Boolean) // Filter out empty strings
+  //     .join("|");
+  // };
+
   const generateSelectionString = (checkedRegions) => {
-      return Object.keys(checkedRegions)
+    return Object.keys(checkedRegions)
       .map((region) => {
         // Collect selected countries for the current region
         const selectedCountries = Object.keys(checkedRegions[region])
-          .filter((country) => checkedRegions[region][country])
+          .filter((country) => checkedRegions[region][country] && country !== "checked")
           .map((country) => `${region}#${country}`);
   
-        // Only include the region once and concatenate with the selected countries
-        return selectedCountries.length > 0
-          ? `${region}|${selectedCountries.join("|")}`
-          : '';
+        // If there are selected countries, return them
+        if (selectedCountries.length > 0) {
+          return selectedCountries.join("|");
+        }
+  
+        // If no countries are selected but the region itself is checked, return the region name
+        if (checkedRegions[region]["checked"]) {
+          return `${region}`;
+        }
+  
+        // Otherwise, return an empty string
+        return '';
       })
       .filter(Boolean) // Filter out empty strings
-      .join("|");
+      .join("|"); 
   };
+  
+  
   
 
 
@@ -164,7 +191,7 @@ const MultiCheckTopicSelection = ({
 
   const updateSelectionString = (newCheckedRegions) => {
     const selectionString = generateSelectionString(newCheckedRegions);
-    //console.log('selectionString--',selectionString);
+    console.log('selectionString--',selectionString);
     setValue("topicId", selectionString);
   };
 

@@ -45,10 +45,10 @@ const booleanOptions = [
 
 
 const handleSelectedIsAutoLogin = (selectedOption) => {
-  //console.log('selectedOption--->',selectedOption);
+  console.log('selectedOption--->',selectedOption);
   setSelectedAutoLogin(selectedOption);
   setValue("isAutoLogin", selectedOption);
-  //console.log('isAutoLogin--->',selectedOption);
+  console.log('isAutoLogin--->',selectedOption);
 };
 const handleSelectedIsInternalOrg = (selectedOption) => {
   setSelectedIsInternalOrg(selectedOption);
@@ -481,7 +481,7 @@ useEffect(() => {
                     onChange={handleSelectedIsAutoLogin}
                     placeholder="Select AutoLogin"
                     isClearable
-                     value={selectedAutoLogin}
+                    value={selectedAutoLogin}
                   />
                 </Col>
               </Row>
