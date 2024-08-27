@@ -4,6 +4,11 @@ import Image from "next/image";
 import Select from "react-select";
 import {  toast } from 'react-toastify';
 import { getWhiteListedDomain } from "@/app/api/user";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+
 const OrgGeneralSetting = ({  
   register, errors,setValue,getValues,orgCategoryList, clearErrors,method, organizationID,
   organizationDomains,
@@ -370,23 +375,24 @@ useEffect(() => {
                   value={editingDomain.id === item.id ? editingDomain.value : item.value}
                   disabled={item?.isDisabled}
                 />
-                {item?.isDisabled === true?(   <Image
-                  alt="edit"
-                  width={20}
-                  height={20}
-                  src='/images/icons/pencil.png'
-                  onClick={() => handleEditDomainName(item.id)}
-                  style={{cursor:"pointer"}}
-                />):(   <Image
-                  alt="edit"
-                  width={20}
-                  height={20}
-                  src='/images/icons/correct.png'
-                  onClick={() => handleSaveDomainName(item)}
-                  style={{cursor:"pointer"}}
-                />)}
+                {item?.isDisabled === true?( <FontAwesomeIcon
+  icon={faPencilAlt}
+  size="md" // Adjust the size as needed, "lg" is an example
+  onClick={() => handleEditDomainName(item.id)}
+  style={{ cursor: "pointer",color:"#000" }}
+/>):(   <FontAwesomeIcon
+  icon={faCircleCheck}
+  size="md" // Adjust size as needed
+  onClick={() => handleSaveDomainName(item)}
+  style={{ cursor: "pointer", color: "#000" }} // Adjust color as needed
+/>)}
               
-                 <Image style={{cursor:"pointer"}} alt="avatar" width={20}  height={20} src='/images/icons/delete.png' onClick={() => handleDeleteDomain(item)}  />
+              <FontAwesomeIcon
+  icon={faTrash}
+  size="md" // You can adjust the size as needed
+  onClick={() => handleSaveDomainName(item)}
+  style={{ cursor: "pointer", color:"#000" }}
+/>
                  
                       </div>
                     )

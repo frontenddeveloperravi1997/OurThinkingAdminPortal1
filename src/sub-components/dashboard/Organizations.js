@@ -111,7 +111,7 @@ const Organizations = ({
     },
     onSuccess(data, variables, context) {
       if (data?.data?.statusCode === 200) {
-        toast.success("Successfully Deleted", {
+        toast.success("Organization successfully Deleted", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
