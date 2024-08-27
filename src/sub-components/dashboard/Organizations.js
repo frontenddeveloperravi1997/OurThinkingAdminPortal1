@@ -110,7 +110,8 @@ const Organizations = ({
       );
     },
     onSuccess(data, variables, context) {
-      if (data?.data?.statusCode === 200) {
+      console.log("Mutation Success Data:", data);
+      if (data?.status === 200) {        
         toast.success("Organization successfully Deleted", {
           position: "top-right",
           autoClose: 5000,
