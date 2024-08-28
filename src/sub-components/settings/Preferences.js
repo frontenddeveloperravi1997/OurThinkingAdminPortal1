@@ -64,7 +64,7 @@ defaultValues.countryId.split('|').forEach(item => {
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [updatedFrequencyList, setUpdatedFrequencyList] = useState([]);
-  console.log('defaultValues?.emailFreq?.value-->',defaultValues?.emailFreq?.value);
+  //console.log('defaultValues?.emailFreq?.value-->',defaultValues?.emailFreq?.value)
   const [selectedFreq, setSelectedFreq] = useState(()=>{  
     // if(defaultValues?.emailFreq?.value === ""){
     //   return null
