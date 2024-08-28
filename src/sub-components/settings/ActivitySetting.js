@@ -14,7 +14,7 @@ const ActivitySetting = ({ user }) => {
                     <Card.Body>
                     <div class="d-flex flex-column gap-1">
                     <p class="dates text-muted d-flex align-items-center w-100">Created date:&nbsp;<small>{formatDate(user.createdDate)}</small></p>
-  <p class="dates text-muted d-flex align-items-center w-100">Last Login date:&nbsp;<small>{formatDate(user.lastLoginDate)}</small></p>
+  <p class="dates text-muted d-flex align-items-center w-100">Last login date:&nbsp;<small>{formatDate(user.lastLoginDate)}</small></p>
   <p class="dates text-muted d-flex align-items-center w-100">Invitation date:&nbsp;<small>{formatDate(user.invitationDate)}</small></p>
   <p class="dates text-muted d-flex align-items-center w-100">Modified date:&nbsp;<small>{formatDate(user.modifiedDate)}</small></p>
 </div>

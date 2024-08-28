@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { organizationCategoryList } from "@/app/api/organization";
 
 const OrgGeneralSetting = ({  
   register, errors,setValue,getValues,orgCategoryList, clearErrors,method, organizationID,
@@ -23,7 +24,9 @@ const OrgGeneralSetting = ({
     const defaultDomainNames = getValues()?.organizationDomains;
     const defaultAssociateAddress = getValues()?.associateAddresses;
     const [updatedOrgCategoryList, setUpdatedOrgCategoryList] = useState([]);
-const [selectedOrgCategory,setSelectedOrgCategory]= useState(() =>{
+    const [updateOrganizationCategoryList, setupdateOrganizationCategoryList] = useState([]);
+
+    const [selectedOrgCategory,setSelectedOrgCategory]= useState(() =>{
   if(defaultValues?.orgCategory?.label === ""){
     return null
   }else{
@@ -260,7 +263,6 @@ useEffect(() => {
   }
 }, [defaultDomainNames]);
 
-
   const handleOrgCategorySelect = (selectedOption) => {
     setSelectedOrgCategory(selectedOption);
     setValue("orgCategory", selectedOption);
@@ -275,6 +277,46 @@ useEffect(() => {
       setUpdatedOrgCategoryList(convertingIntoFormat);
     }
   }, [orgCategoryList]);
+
+  const fetchOrganizationCategoryData = async () => {
+    try {
+      const organizationCategoryData = await organizationCategoryList();
+      if (organizationCategoryData?.statusCode === 200) {
+        const formattedOrganizationCategoryData = organizationCategoryData?.data?.data.map((item) => ({
+          value: item?.organizationCategoryID,
+          label: item?.categoryName,
+        }));
+        setupdateOrganizationCategoryList(formattedOrganizationCategoryData);
+      } else {
+        toast.error("Oops something went wrong!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch roles!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
+useEffect(() => {
+    fetchOrganizationCategoryData();
+}, []);
 
   return (
     <Row className="mb-8">
@@ -323,7 +365,7 @@ useEffect(() => {
                   </Form.Label>
                   <Col md={8} xs={12}>
                   <Select
-                    options={updatedOrgCategoryList}
+                    options={updateOrganizationCategoryList}
                     onChange={handleOrgCategorySelect}
                     placeholder="Select Organization Category"
                     isClearable
