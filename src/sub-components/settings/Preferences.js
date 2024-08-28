@@ -7,6 +7,7 @@ import MultiCheckAccordion from "@/sub-components/dashboard/MultiCheckAccordion"
 import { FormSelect } from "../../widgets";
 import Select from "react-select";
 import MultiCheckTopicSelection from "../dashboard/MultiCheckTopicSelection";
+import { getRolesData } from '@/app/api/user';
 
 const Preferences = ({
   frequencyList,
@@ -76,6 +77,7 @@ defaultValues.countryId.split('|').forEach(item => {
   );
   const [updatedLanguageList, setUpdatedLanguageList] = useState([]);
   const [updatedRoleList, setUpdatedRoleList] = useState([]);
+  const [viewRoleList, setViewRoleList] = useState([]);
   const [updatedKeyContactList, setUpdatedKeyContactList] = useState([]);
  
   const [selectedPermissions,setSelectedPermissions]= useState([]);
@@ -87,6 +89,8 @@ defaultValues.countryId.split('|').forEach(item => {
  
     setSelectedFreq(selectedOption);
     setValue("emailFreq", selectedOption);
+    console.log('setValue-->',selectedOption);
+    console.log('setSelectedFreq-->',selectedOption);
   };
 
   const handleAlertSelect = (selectedOption) => {
@@ -222,6 +226,47 @@ defaultValues.countryId.split('|').forEach(item => {
     setSelectedKeyContacts(selected);
   }, []);
   
+
+  const fetchRolesData = async () => {
+    try {
+      const rolesData = await getRolesData();
+      if (rolesData?.statusCode === 200) {
+        const formattedRoles = rolesData?.data?.data.map((item) => ({
+          value: item?.roleID,
+          label: item?.roleName,
+        }));
+        setViewRoleList(formattedRoles);
+      } else {
+        toast.error("", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error("", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchRolesData();
+  }, []);
+
+
   return (
     <Row className="mb-8">
       <Col xl={3} lg={4} md={12} xs={12}>
@@ -343,7 +388,7 @@ defaultValues.countryId.split('|').forEach(item => {
                 </Form.Label>
                 <Col md={8} xs={12}>
                 <Select
-                    options={updatedRoleList}
+                    options={viewRoleList}
                     onChange={handleRoleSelect}
                     placeholder="Select roles"
                     isClearable
