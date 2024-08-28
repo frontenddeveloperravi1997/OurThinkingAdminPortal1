@@ -254,7 +254,7 @@ const OrganizationForm = ({
           firmContact: data?.firmContact === "" ? null : data?.firmContact,
           organizationURL: data?.orgUrl === "" ? null : data?.orgUrl,
           internalOrganization: data?.isInternalOrg?.value,
-          // autoLogin: data?.isAutoLogin?.value,
+          autoLogin: data?.isAutoLogin?.value,
           // createdDate: new Date().toUTCString(),
           createdDate: new Date().toISOString(),
           comparativeGuides: updatedPermissions?.[0],

@@ -210,6 +210,25 @@ const updateUserRole = async (payload) => {
 };
 
 
+const updateUserAddToGroup = async (payload) => {
+  const response = await fetch(`${baseUrl}/api/User/AddOrChangeOrganizationToUser`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Api_Key": apiKey,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  const data = await response.json();
+  return data;
+};
+
+
 
 const exportAllUsers = async () => {
   try {
@@ -373,6 +392,7 @@ const bulkTagging = async (formData) => {
 export {
   getUsersList,
   updateUserRole,
+  updateUserAddToGroup,
   bulkTagging,
   updateUser,
   getFrequencyList,
