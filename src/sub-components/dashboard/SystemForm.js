@@ -112,17 +112,17 @@ const [domainCreated,setDomainCreated] = useState(false)
             const exceptionListDomainExists = await isExceptionListDomainExists(data?.domainName);
     
             if (domainExists) {
-              toast.error('Domain name already exists')
+              toast.error('Domain name already exists!!')
               return
             }
 
             if (blackListDomainExists) {
-              toast.error('Domain name already exists')
+              toast.error('Domain name already exists!!')
               return
             }
 
             if(exceptionListDomainExists) {
-              toast.error('Domain name already exists')
+              toast.error('Domain name already exists!!')
               return
             }
    

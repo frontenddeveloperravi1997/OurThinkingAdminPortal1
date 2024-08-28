@@ -65,86 +65,71 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
 
     // mutation call
     const addNewUserOrg = async () => {
-        setLoading(true); // Start loading
-        try {
-            // Ensure that selectedOrganization is not null or undefined
-            if (!selectedOrganization) {
-                toast.error("You must select at least one organization", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-                return;
-            }
-    
-            const OrgIds = [
-                {
-                    organizationId: selectedOrganization.value,
-                    organizationName: selectedOrganization.label,
-                },
-            ];
-    
-            const userIds = Object.keys(checkedUsers);
-    
-            const payload = { 
-                userIds,
-                OrgIds: [selectedOrganization.value]                
-            };
-            console.log('payload-->',payload);
-            const response = await updateUserAddToGroup(payload);
-            console.log('API Response:', response); // Log the entire response
-    
-            // Check if the response indicates success
-            if (response.statusCode === 200 || response.status === true) {
-                toast.success("Successfully added user add to group!!", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-    
-                onClose(); // Close the modal after the operation
-            } else {
-                // Handle cases where the statusCode is not 200 or status is false
-                toast.error(`Failed to update user add to group! ${response.data || ''}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                });
-            }
-        } catch (error) {
-            console.error('Error occurred:', error);
-            toast.error("An error occurred while trying to update roles!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            });
-        } finally {
-            setLoading(false); // End loading
-        }
-    };
-    
-      
-      
+      setLoading(true); // Start loading
+      try {
+          if (!selectedOrganization) {
+              toast.error("You must select at least one organization", {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+              });
+              return;
+          }
+  
+          const orgId = selectedOrganization.value;
+          const userIds = Object.keys(checkedUsers).map(id => parseInt(id, 10)); 
+  
+          const payload = { 
+              userIds,
+              orgId,                
+          };
+          const response = await updateUserAddToGroup(payload);  
+         
+          if (response.statusCode === 200 || response.status === true) {
+              toast.success("Successfully added user add to group!!", {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+              });
+  
+              onClose();
+          } else {
+              toast.error(`Failed to update user add to group! ${response.data || ''}`, {
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+              });
+          }
+      } catch (error) {
+          toast.error("An error occurred while trying to update roles!", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+          });
+      } finally {
+          setLoading(false); // End loading
+      }
+  };      
 
   return (
     <Modal show={show} onHide={onClose} centered  size="lg">
@@ -174,24 +159,13 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
                 </Row>
     </Modal.Body>
     <Modal.Footer>
-    <Button
-            variant="primary"
-            disabled={loading}
-            onClick={addNewUserOrg}
-          >
-       
-       Add
-
-            {(loading) && <Spinner style={{marginLeft:"8px"}} animation="border"  size="sm"
-          role="status"
-          aria-hidden="true" />}
-        
-          </Button>
+    <Button variant="primary" disabled={loading} onClick={addNewUserOrg}>
+    Add {(loading) &&
+    <Spinner style={{marginLeft: "8px"}} animation="border" size="sm" role="status" aria-hidden="true" />}
+    </Button>
     <Button variant="secondary" onClick={handleHideActionPop} disabled={loading}>
-            Cancel
-          </Button>
-
-    
+        Cancel
+    </Button>    
     </Modal.Footer>
   </Modal>
   )

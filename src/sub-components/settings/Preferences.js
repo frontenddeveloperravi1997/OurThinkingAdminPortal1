@@ -64,13 +64,14 @@ defaultValues.countryId.split('|').forEach(item => {
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [updatedFrequencyList, setUpdatedFrequencyList] = useState([]);
-  const [selectedFreq, setSelectedFreq] = useState(()=>{
-  
-    if(defaultValues?.emailFreq?.value === ""){
-      return null
-    }else{
-     return defaultValues?.emailFreq
-    }
+  console.log('defaultValues?.emailFreq?.value-->',defaultValues?.emailFreq?.value);
+  const [selectedFreq, setSelectedFreq] = useState(()=>{  
+    // if(defaultValues?.emailFreq?.value === ""){
+    //   return null
+    // }else{
+    //  return defaultValues?.emailFreq
+    // }
+    return defaultValues?.emailFreq
   });
   const [selectedAlert, setSelectedAlert] = useState(
     defaultValues?.instantAlert
@@ -85,12 +86,9 @@ defaultValues.countryId.split('|').forEach(item => {
   const [selectedKeyContacts,setSelectedKeyContacts]= useState([])
 
 
-  const handleFrequencySelect = (selectedOption) => {
- 
+  const handleFrequencySelect = (selectedOption) => { 
     setSelectedFreq(selectedOption);
     setValue("emailFreq", selectedOption);
-    console.log('setValue-->',selectedOption);
-    console.log('setSelectedFreq-->',selectedOption);
   };
 
   const handleAlertSelect = (selectedOption) => {
