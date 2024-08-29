@@ -38,38 +38,21 @@ const MultiCheckTopicSelection = ({
   const generateSelectionString = (checkedRegions) => {
     return Object.keys(checkedRegions)
       .map((region) => {
-        // Collect selected countries for the current region
         const selectedCountries = Object.keys(checkedRegions[region])
           .filter((country) => checkedRegions[region][country] && country !== "checked")
           .map((country) => `${region}#${country}`);
-  
-        // If there are selected countries, return them
         if (selectedCountries.length > 0) {
           return selectedCountries.join("|");
         }
-  
-        // If no countries are selected but the region itself is checked, return the region name
         if (checkedRegions[region]["checked"]) {
           return `${region}`;
         }
-  
-        // Otherwise, return an empty string
         return '';
       })
-      .filter(Boolean) // Filter out empty strings
+      .filter(Boolean)
       .join("|"); 
   };
-  
-  
-  
-
-
- 
-
-
-  
-
-  
+    
   const [checkedRegions, setCheckedRegions] = useState({});
   const [selectAll, setSelectAll] = useState(false);
   const [isSelectAllClicked, setIsSelectAllClicked] = useState(false);
