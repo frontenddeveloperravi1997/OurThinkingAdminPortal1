@@ -6,7 +6,7 @@ import {  toast } from 'react-toastify';
 import { getWhiteListedDomain } from "@/app/api/user";
 import { Edit2 } from 'react-feather';
 import { Trash2 } from 'react-feather';
-import { Check } from 'react-feather';
+import { CheckCircle } from 'react-feather';
 import { organizationCategoryList } from "@/app/api/organization";
 
 const OrgGeneralSetting = ({  
@@ -420,7 +420,7 @@ useEffect(() => {
   size="sm" // Adjust the size as needed, "lg" is an example
   onClick={() => handleEditDomainName(item.id)}
   style={{ cursor: "pointer",color:"#000" }}
-/>):(   <Check
+/>):(   <CheckCircle
   size="sm" // Adjust size as needed
   onClick={() => handleSaveDomainName(item)}
   style={{ cursor: "pointer", color: "#000" }} // Adjust color as needed
