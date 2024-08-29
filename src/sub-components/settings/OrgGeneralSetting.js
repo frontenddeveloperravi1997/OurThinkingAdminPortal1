@@ -19,7 +19,7 @@ const OrgGeneralSetting = ({
   setDeleteOrganizationWhitelistDomain 
  }) => {
     const defaultValues = getValues();
-    //console.log('defaultValues-->',defaultValues);
+
     const defaultDomainNames = getValues()?.organizationDomains;
     const defaultAssociateAddress = getValues()?.associateAddresses;
     const [updatedOrgCategoryList, setUpdatedOrgCategoryList] = useState([]);
@@ -32,7 +32,7 @@ const OrgGeneralSetting = ({
     return defaultValues?.orgCategory
   }
 });
-// const [orgStatus,setOrgStatus] = useState(defaultValues?.status);
+
 const [associateDomains,setAssociateDomain] = useState([]);
 
 const [associateDomainInput,setAssociateDomainInput] = useState("")
@@ -50,7 +50,6 @@ const booleanOptions = [
   { value: false, label: "No" },
 ];
 
-
 const handleSelectedIsAutoLogin = (selectedOption) => {
   console.log('selectedOption--->',selectedOption);
   setSelectedAutoLogin(selectedOption);
@@ -62,14 +61,10 @@ const handleSelectedIsInternalOrg = (selectedOption) => {
   setValue("isInternalOrg", selectedOption);
 };
 
-/* all the functions for Domain names  starts*/
-
 const updateSingleDomainName = (domainName) => {
 
-   // Convert each value to "value|value" format
    const formattedDomainNames = domainName.map(obj => obj.value).join('|');
 
-   // Set the formatted domain names
    setValue("domainNames", formattedDomainNames);
 };
 const handleDomainNameInput = (e)=>{
@@ -77,7 +72,7 @@ const handleDomainNameInput = (e)=>{
 };
 
 const handleAddDomainName = debounce(async () => {
-     // check if the domain is whitelisted
+
     if(await getWhiteListedDomain(associateDomainInput)){
       toast.error('Domain already exist!', {
         position: "top-right",
@@ -104,17 +99,6 @@ const handleAddDomainName = debounce(async () => {
         });
         return ;
     }
-    
-
-    // setOrganizationDomains((prevDomains) => [
-    //   ...prevDomains,
-    //   { 
-    //     id:0,
-    //     organizationId:organizationID, 
-    //     domainName:associateDomainInput,
-    //     createdDate: new Date().toISOString()
-    //   }
-    // ]);
 
     if(method==="addOrg"){
       console.log('organizationDomains-->>',organizationDomains);
@@ -149,10 +133,10 @@ const handleAddDomainName = debounce(async () => {
         value: associateDomainInput
       }];
       updateSingleDomainName(updatedDomains);
-      //console.log('updatedDomains-->',updatedDomains);
+
       return updatedDomains;
     });
-    // Moved outside the setState function
+
     setAssociateDomainInput("");
   }
 
@@ -166,15 +150,6 @@ function debounce(func, delay) {
   };
 }
 const handleEditDomainName = async (id, value) => {
-  // setUpdateOrganizationWhitelistDomain((prevDomains) => [
-  //   ...prevDomains,
-  //   { 
-  //     id:0,
-  //     organizationId:organizationID, 
-  //     domainName:id,
-  //     createdDate: new Date().toISOString()
-  //   }
-  // ]);
 
   setEditingDomain({ id, value });
   setAssociateDomain((prev) =>
@@ -184,7 +159,7 @@ const handleEditDomainName = async (id, value) => {
   );
 };
 const handleDomainValueChange = (e) => {
-  //setEditingDomain({ ...editingDomain, value: e.target.value });
+
   setEditingDomain((prev) => ({
     ...prev,
     value: e.target.value,
@@ -192,8 +167,7 @@ const handleDomainValueChange = (e) => {
 };
 
 const handleSaveDomainName = (item) => {
-  
-  // let whiteListDomain = getWhiteListedDomain(id)
+
   setUpdateOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
@@ -208,7 +182,7 @@ const handleSaveDomainName = (item) => {
     const updatedDomains = prev.map((domain) => {
       if (domain.id === item.id) {
         const newDomain = { ...domain, isDisabled: true };
-        // Only update the value if editingDomain.value is valid
+
         if (editingDomain.value !== undefined && editingDomain.value !== null && editingDomain.value !== "") {
           newDomain.value = editingDomain.value;
         }
@@ -224,7 +198,6 @@ const handleSaveDomainName = (item) => {
 };
 
 const handleDeleteDomain = (item) => {
-  // check if what you want to delete exist?
 
   setDeleteOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
@@ -235,7 +208,6 @@ const handleDeleteDomain = (item) => {
       createdDate: new Date().toISOString()
     }
   ]);
- 
 
   setAssociateDomain((prev) => {
     const updatedDomains = prev.filter((domain) => domain.id !== item.id);
@@ -243,9 +215,6 @@ const handleDeleteDomain = (item) => {
     return updatedDomains;
   });
 };
-//console.log("associateDomains---",associateDomains);
-
-
 
 useEffect(() => {
   if (defaultDomainNames.length) {
@@ -332,8 +301,7 @@ useEffect(() => {
             <div className="mb-8">
               <h4>Basic information</h4>
             </div>
-           
-          
+
               <Row className="mb-3">
                 <Form.Label
                   className="col-sm-3 col-form-label form-label"
@@ -348,7 +316,7 @@ useEffect(() => {
                     type="text"
                     placeholder="Organization Name"
                     id="organizationName"
-                  
+
                     {...register("organizationName", {
                       required: true,
                       minLength: 1,
@@ -369,29 +337,29 @@ useEffect(() => {
                     placeholder="Select Organization Category"
                     isClearable
                     value={selectedOrgCategory}
-                    
+
                     styles={{
                       menu: (provided) => ({
                         ...provided,
-                        zIndex: 9999, // Increase the z-index value as needed
+                        zIndex: 9999, 
                       }),
                     }}
                   />
                   </Col>
                 </Row>
-               
+
               <Row className="mb-3">
                 <Form.Label
                   className="col-sm-3 col-form-label form-label"
                   htmlFor="domainName"
                 >
-                  {/* Organization Domain names */}
+                  {}
                   Associated Domain names
                 </Form.Label>
                 <Col md={8} xs={12}>
                 <InputGroup>
                   <Form.Control
-                  
+
                     type="text"
                     placeholder="Type Domain names"
                     id="domainName"
@@ -403,44 +371,41 @@ useEffect(() => {
         </Button>
                   </InputGroup>
                   <div className="mt-3 d-flex flex-column gap-1">
-                    
+
                    {associateDomains?.length>0 &&associateDomains?.map((item,index)=>{
                     return(
                   <div key={index} className="mt-3 d-flex flex-row gap-2 align-items-center custom-react-icons">
                   <Form.Control
-                  
+
                   type="text"
-                 
+
                   id={item?.id}
                   onChange={(e) => !item.isDisabled && handleDomainValueChange(e)}
                   value={editingDomain.id === item.id ? editingDomain.value : item.value}
                   disabled={item?.isDisabled}
                 />
                 {item?.isDisabled === true?( <Edit2
-  size="sm" // Adjust the size as needed, "lg" is an example
-  onClick={() => handleEditDomainName(item.id)}
+    onClick={() => handleEditDomainName(item.id)}
   style={{ cursor: "pointer",color:"#000" }}
-/>):(   <CheckCircle
-  size="sm" // Adjust size as needed
-  onClick={() => handleSaveDomainName(item)}
-  style={{ cursor: "pointer", color: "#000" }} // Adjust color as needed
+/>):(   <Check
+    onClick={() => handleSaveDomainName(item)}
+  style={{ cursor: "pointer", color: "#000" }} 
 />)}
-              
+
               <Trash2
-  size="md" // You can adjust the size as needed
-  onClick={() => handleSaveDomainName(item)}
+  onClick={() => handleDeleteDomain(item)}
   style={{ cursor: "pointer", color:"#000" }}
 />
-                 
+
                       </div>
                     )
                    })}
-                 
+
                   </div>
                 </Col>
-              
+
               </Row>
-              
+
               <Row className="mb-3">
                 <Form.Label
                   className="col-sm-3 col-form-label form-label"
@@ -454,7 +419,7 @@ useEffect(() => {
                     type="text"
                     placeholder="Enter Organization url"
                     id="orgUrl"
-                  
+
                     {...register("orgUrl", {
                       required: false,
                       minLength: 2,
@@ -468,7 +433,7 @@ useEffect(() => {
        {errors.orgUrl && <Form.Control.Feedback type="invalid">Invalid url</Form.Control.Feedback>}
                 </Col>
               </Row>
-          
+
               <Row className="mb-3">
                 <Form.Label className="col-sm-3" htmlFor="isInternalOrg">
                   Internal Organization
@@ -498,8 +463,7 @@ useEffect(() => {
      placeholder=""
      id="autoLoginUrl"
      as="textarea" rows={3}
-     //disabled
-   
+
      {...register("autoLoginUrl",{
        required:false,
        minLength: 2,
@@ -514,7 +478,7 @@ useEffect(() => {
  </Col>
 </Row>
               )}
-             
+
               <Row className="mb-3">
                 <Form.Label className="col-sm-3" htmlFor="alert">
                   Auto Login
