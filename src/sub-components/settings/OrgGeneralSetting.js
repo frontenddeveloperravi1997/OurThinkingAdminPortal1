@@ -4,10 +4,9 @@ import Image from "next/image";
 import Select from "react-select";
 import {  toast } from 'react-toastify';
 import { getWhiteListedDomain } from "@/app/api/user";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { Edit2 } from 'react-feather';
+import { Trash2 } from 'react-feather';
+import { Check } from 'react-feather';
 import { organizationCategoryList } from "@/app/api/organization";
 
 const OrgGeneralSetting = ({  
@@ -407,7 +406,7 @@ useEffect(() => {
                     
                    {associateDomains?.length>0 &&associateDomains?.map((item,index)=>{
                     return(
-                  <div key={index} className="mt-3 d-flex flex-row gap-2 align-items-center">
+                  <div key={index} className="mt-3 d-flex flex-row gap-2 align-items-center custom-react-icons">
                   <Form.Control
                   
                   type="text"
@@ -417,20 +416,17 @@ useEffect(() => {
                   value={editingDomain.id === item.id ? editingDomain.value : item.value}
                   disabled={item?.isDisabled}
                 />
-                {item?.isDisabled === true?( <FontAwesomeIcon
-  icon={faPencilAlt}
-  size="md" // Adjust the size as needed, "lg" is an example
+                {item?.isDisabled === true?( <Edit2
+  size="sm" // Adjust the size as needed, "lg" is an example
   onClick={() => handleEditDomainName(item.id)}
   style={{ cursor: "pointer",color:"#000" }}
-/>):(   <FontAwesomeIcon
-  icon={faCircleCheck}
-  size="md" // Adjust size as needed
+/>):(   <Check
+  size="sm" // Adjust size as needed
   onClick={() => handleSaveDomainName(item)}
   style={{ cursor: "pointer", color: "#000" }} // Adjust color as needed
 />)}
               
-              <FontAwesomeIcon
-  icon={faTrash}
+              <Trash2
   size="md" // You can adjust the size as needed
   onClick={() => handleSaveDomainName(item)}
   style={{ cursor: "pointer", color:"#000" }}

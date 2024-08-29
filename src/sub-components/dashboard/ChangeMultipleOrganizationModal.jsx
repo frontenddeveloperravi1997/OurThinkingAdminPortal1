@@ -88,6 +88,7 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
               userIds,
               orgId,                
           };
+          
           const response = await updateUserAddToGroup(payload);  
          
           if (response.statusCode === 200 || response.status === true) {
