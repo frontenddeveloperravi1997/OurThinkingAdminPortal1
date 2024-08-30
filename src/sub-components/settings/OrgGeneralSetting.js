@@ -72,22 +72,12 @@ const handleDomainNameInput = (e)=>{
 };
 
 const handleAddDomainName = debounce(async () => {
+  if (associateDomainInput.trim() === "") {      
+      return;
+  }
 
-    if(await getWhiteListedDomain(associateDomainInput)){
-      toast.error('Domain already exist!', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      return ;
-    }
-    if(organizationDomains.find((domain) => domain.domainName.toLowerCase() == associateDomainInput.toLowerCase())){
-        toast.error('Domain already exists in lists!', {
+  if (await getWhiteListedDomain(associateDomainInput)) {
+      toast.error('Domain already exists!', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -96,51 +86,66 @@ const handleAddDomainName = debounce(async () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-        });
-        return ;
-    }
-
-    if(method==="addOrg"){
-      console.log('organizationDomains-->>',organizationDomains);
-      setUpdateOrganizationWhitelistDomain((prevDomains) => [
-        ...prevDomains,
-        { 
-          id:updateOrganizationWhitelistDomain.length,
-          organizationId:0, 
-          domainName:associateDomainInput,
-          createdDate: new Date().toISOString()
-        }
-      ]);
-    }
-
-    if(method==="editOrg"){
-      setUpdateOrganizationWhitelistDomain((prevDomains) => [
-        ...prevDomains,
-        { 
-          id:updateOrganizationWhitelistDomain.length,
-          organizationId:organizationID, 
-          domainName:associateDomainInput,
-          createdDate: new Date().toISOString()
-        }
-      ]);
-    }
-
-  if (associateDomainInput !== "") {
-    setAssociateDomain((prev) => {
-      const updatedDomains = [...prev, {
-        isDisabled: true,
-        id: associateDomainInput,
-        value: associateDomainInput
-      }];
-      updateSingleDomainName(updatedDomains);
-
-      return updatedDomains;
-    });
-
-    setAssociateDomainInput("");
+      });
+      return;
   }
 
-},300);
+  if (organizationDomains.find((domain) => domain.domainName.toLowerCase() === associateDomainInput.toLowerCase())) {
+      toast.error('Domain already exists in lists!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+      });
+      return;
+  }
+
+  if (method === "addOrg") {
+      console.log('organizationDomains-->>', organizationDomains);
+      setUpdateOrganizationWhitelistDomain((prevDomains) => [
+          ...prevDomains,
+          { 
+              id: updateOrganizationWhitelistDomain.length,
+              organizationId: 0, 
+              domainName: associateDomainInput,
+              createdDate: new Date().toISOString()
+          }
+      ]);
+  }
+
+  if (method === "editOrg") {
+      setUpdateOrganizationWhitelistDomain((prevDomains) => [
+          ...prevDomains,
+          { 
+              id: updateOrganizationWhitelistDomain.length,
+              organizationId: organizationID, 
+              domainName: associateDomainInput,
+              createdDate: new Date().toISOString()
+          }
+      ]);
+  }
+
+  if (associateDomainInput !== "") {
+      setAssociateDomain((prev) => {
+          const updatedDomains = [...prev, {
+              isDisabled: true,
+              id: associateDomainInput,
+              value: associateDomainInput
+          }];
+          updateSingleDomainName(updatedDomains);
+
+          return updatedDomains;
+      });
+
+      setAssociateDomainInput("");
+  }
+
+}, 300);
+
 
 function debounce(func, delay) {
   let timeout;
@@ -387,7 +392,7 @@ useEffect(() => {
                 {item?.isDisabled === true?( <Edit2
     onClick={() => handleEditDomainName(item.id)}
   style={{ cursor: "pointer",color:"#000" }}
-/>):(   <Check
+/>):(   <CheckCircle
     onClick={() => handleSaveDomainName(item)}
   style={{ cursor: "pointer", color: "#000" }} 
 />)}

@@ -4,6 +4,7 @@ import { deleteUserById } from "@/app/api/user";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import CommonModal from "../dashboard/CommonModal";
+
 const DeleteAccount = ({ userID, userEmail }) => {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);

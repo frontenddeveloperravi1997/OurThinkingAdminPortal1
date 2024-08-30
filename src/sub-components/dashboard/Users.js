@@ -340,8 +340,7 @@ const handleChangeMultipleOrganization = () => {
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
-      //return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
-      return await commonQuery("Delete", `/api/User/${id}`, data);
+      return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
     },
     onSuccess(data, variables, context) {
  

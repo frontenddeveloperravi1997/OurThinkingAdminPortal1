@@ -6,7 +6,7 @@ export const formatDate = (dateString) => {
   const date = new Date(dateString);
   
   const year = date.getFullYear();
-  const monthNames = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const month = monthNames[date.getMonth()];
   const day = date.getDate();
   const hours = String(date.getHours()).padStart(2, '0');

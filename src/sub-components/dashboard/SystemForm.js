@@ -159,18 +159,20 @@ const [domainCreated,setDomainCreated] = useState(false)
       }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-            <ToastContainer
-position="top-right"
-autoClose={5000}
-hideProgressBar={false}
-newestOnTop={false}
-closeOnClick
-rtl={false}
-pauseOnFocusLoss
-draggable
-pauseOnHover
-theme="colored"
-/>
+            {!isEdit && (
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      )}
 <CommonModal
    show={showCancelPop}
    onClose={handleHideCancelPop}
@@ -221,27 +223,10 @@ theme="colored"
         </Row>
         <Row className="mb-8">
         <Col md={{ offset: 3, span: 11 }} xs={12} className="mt-2 d-flex gap-4">
-          <Button
-            variant="primary"
-            type="submit"
-             disabled={isPending || domainCreated}
-          >
-         
-             {isEdit===true?"Save Changes":"Add"}
-
-              {(isPending) &&  <Spinner style={{marginLeft:"8px"}} animation="border"  size="sm"
-          role="status"
-          aria-hidden="true" />}
-          
-          </Button>
-          <Button
-          className="btn btn-danger"
-            type="button"
-           disabled={domainCreated}
-             onClick={handleShowCancelPop}
-          >           
-             Cancel
-          </Button>
+        
+        <Button variant="primary" type="submit" disabled={isPending || domainCreated} > {isEdit===true?"Save Changes":"Add"} {(isPending) && <Spinner style={{marginLeft:"8px"}} animation="border" size="sm" role="status" aria-hidden="true" />} </Button>
+        
+        <Button className="btn btn-danger" type="button" disabled={domainCreated} onClick={handleShowCancelPop} > Cancel </Button>
         </Col>
       </Row>
         </form>

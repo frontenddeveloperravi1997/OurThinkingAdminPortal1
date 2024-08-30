@@ -9,6 +9,7 @@ const DeleteOrgAccount = ({ Id, orgName }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState(null);
   const [showCancelPop, setShowCancelPop] = useState(false);
+  
   const handleDelete = async () => {
     setIsDeleting(true);
     setError(null);
