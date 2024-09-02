@@ -21,9 +21,7 @@ const UpdateBlackList = ({ params }) => {
                         setDomain(domainData?.data);
                     }else{
                         toast.error("Oops failed to fetch details")
-                    }
-                   
-                 
+                    }                
                 }
             } catch (error) {
                 console.error('Error fetching user details:', error);
