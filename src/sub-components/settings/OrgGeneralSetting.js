@@ -90,19 +90,19 @@ const handleAddDomainName = debounce(async () => {
       return;
   }
 
-  if (organizationDomains.find((domain) => domain.domainName.toLowerCase() === associateDomainInput.toLowerCase())) {
-      toast.error('Domain already exists in lists!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-      });
-      return;
-  }
+  if (updateOrganizationWhitelistDomain.find((domain) => domain.domainName.toLowerCase() === associateDomainInput.toLowerCase())) {
+    toast.error('Domain already exists in lists!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    });
+    return;
+}
 
   if (method === "addOrg") {
       console.log('organizationDomains-->>', organizationDomains);
@@ -207,7 +207,7 @@ const handleDeleteDomain = (item) => {
   setDeleteOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
-      id:item.id,
+      id: typeof item.id === 'string' ? 0 : item.id,
       organizationId:organizationID, 
       domainName:item.value,
       createdDate: new Date().toISOString()
@@ -219,7 +219,16 @@ const handleDeleteDomain = (item) => {
     updateSingleDomainName(updatedDomains);
     return updatedDomains;
   });
+
+  setUpdateOrganizationWhitelistDomain((prev) => {
+    const updatedDomains = prev.filter(
+      (domain) => domain.domainName !== item.value
+    );
+    return updatedDomains;
+  });
+
 };
+
 
 useEffect(() => {
   if (defaultDomainNames.length) {
