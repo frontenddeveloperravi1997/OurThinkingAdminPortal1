@@ -560,7 +560,7 @@ const handleChangeMultipleOrganization = () => {
         e.preventDefault();
         onClick(e);
       }}
-      className="text-muted text-primary-hover"
+      className="text-muted text-primary-hover custom-link"
     >
       {children}
     </Link>
@@ -599,65 +599,37 @@ const handleChangeMultipleOrganization = () => {
   
   const ActionMoreMenu = ({ userID, status, userEmail,emailVerify }) => (
      
-    <Button
-    onClick={() =>{}}
- className="more-btn"
-variant="outline-dark"
-
-  >
-    <Dropdown>
-      <Dropdown.Toggle as={CustomToggleMore}>
-       More +
-      </Dropdown.Toggle>
-      <Dropdown.Menu align={"end"}>
-     
-      
-        <Dropdown.Item
-          eventKey="1"
-      // disabled={Boolean(emailVerify === "Verified")}
-          onClick={handleMultipleSendInvite}
-        >
-          {isPendingReset ? "Sending Invite.." : "Send Invitation"}
-        </Dropdown.Item>
-        <Dropdown.Item     onClick={handleMultipleReset} eventKey="2">
+<Button onClick={() => {}} className="more-btn custom-more-cta" variant="outline-dark">
+  <Dropdown>
+    <Dropdown.Toggle as={CustomToggleMore}>
+      {/* This will replace the content inside the button with CustomToggleMore */}
+      More +
+    </Dropdown.Toggle>
+    <Dropdown.Menu align={"end"}>
+      <Dropdown.Item
+        eventKey="1"
+        onClick={handleMultipleSendInvite}
+      >
+        {isPendingReset ? "Sending Invite.." : "Send Invitation"}
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleMultipleReset} eventKey="2">
         {isPendingReset ? "Sending..." : "Reset Password"}
-          
-          </Dropdown.Item>
-       
-          <Dropdown.Item  onClick={handleChangeMultipleOrganization}
-            eventKey="2"
-          >
-            Add to group
-            </Dropdown.Item>
-      
-          <Dropdown.Item
-            onClick={handleChangeMultipleDomain}
-            eventKey="3"
-          >
-           Change User Roles
-          </Dropdown.Item>
-
-         
-   
-      
-          <Dropdown.Item
-         onClick={handleMultipleDelete}
-            eventKey="4"
-          >
-            Delete
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            onClick={handleChangeBulkTagging}
-            eventKey="5"
-          >
-           User Bulk Tagging
-          </Dropdown.Item>
-        
-    
-      </Dropdown.Menu>
-    </Dropdown>
-    </Button>
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeMultipleOrganization} eventKey="3">
+        Add to group
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeMultipleDomain} eventKey="4">
+        Change User Roles
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleMultipleDelete} eventKey="5">
+        Delete
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeBulkTagging} eventKey="6">
+        User Bulk Tagging
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  </Dropdown>
+</Button>
   );
 
   return (
@@ -760,10 +732,7 @@ variant="outline-dark"
             </div>
             {isCheckedUsersNotEmpty &&(
   <div className={UploadWrap}>
-  {/* <Button onClick={()=>{}}     variant="outline-dark">
-    More +
-
-  </Button> */}
+ 
   <ActionMoreMenu  />
 
 </div>

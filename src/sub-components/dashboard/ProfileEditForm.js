@@ -95,8 +95,7 @@ const ProfileEditForm = ({
     mutationFn: async (data) => {
       return await commonQuery("PUT", `/api/User/${user?.userID}`, data);
     },
-    onSuccess(data, variables, context) {
-     
+    onSuccess(data, variables, context) {     
       if (data?.data?.statusCode == 200) {
         setUserCreated(true)
         toast.success("User updated successfully!!", {
@@ -184,14 +183,17 @@ const ProfileEditForm = ({
       });
       return newPermission;
     });
-
+  
     const isLanguage = data?.language === "";
     const isTopic = data?.topicId === "";
+    console.log('data.topicId-->', data?.topicId);
+    console.log('Type of data.topicId-->', typeof data?.topicId);
+    console.log('Comparison result:', data?.topicId === "");
+    console.log('isTopic-->', isTopic); 
     const isCountry = data?.countryId === "";
     const anyNotEmpty = !isLanguage || !isTopic || !isCountry;
     const allEmpty = isLanguage && isTopic && isCountry;
     const allFilled = !isLanguage && !isTopic && !isCountry;
-
     if (anyNotEmpty && !(allEmpty || allFilled)) {
       setShowError(true);
       setErrorMsg("Please select Country,Topic and Language");
@@ -309,23 +311,6 @@ const ProfileEditForm = ({
     }
 
   };
-
-  // query for email validation
-
-  // const {
-
-  //   isLoading: emailCheckLoading,
-  //   data:emailCheckData ,
-
-  // } = useQuery({
-  //   queryKey: ['emailCheck', emailWatch],
-  //   queryFn: async () =>
-  //     commonQuery("POST", `/api/CheckUserExists?email=`, data),
-  //   // enabled: !!assessmentId,
-  //   refetchOnWindowFocus: false,
-  //   refetchOnMount: false,
-
-  // });
 
   const checkEmailExists = async (email) => {
     setEmailValidLoading(true);

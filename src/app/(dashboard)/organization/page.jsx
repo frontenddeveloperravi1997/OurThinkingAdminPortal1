@@ -20,10 +20,10 @@ const OrganizationLanding = () => {
     const fetchTotalPages = async () => {
       setLoading(true);
       try {
-        const responseData = await organizationList(pageNumber);
+         const responseData = await organizationList(pageNumber);
          const orgCategoryData = await organizationCategoryList();
          setOrgCategoryList(orgCategoryData?.data?.data);
-        if (responseData?.statusCode === 200) {
+          if (responseData?.statusCode === 200) {
           setTotalPages(responseData?.data?.totalPages);
           setPageSize(responseData?.data?.pageSize)
           setLoading(false);
@@ -39,12 +39,10 @@ const OrganizationLanding = () => {
         setLoading(false);
       }
     };
-
     fetchTotalPages();
   }, []);
 
-  const handlePageChange = (page) => {
-    
+  const handlePageChange = (page) => {    
     if (page > 0 && page <= totalPages) {
       setPageNumber(page);
     }

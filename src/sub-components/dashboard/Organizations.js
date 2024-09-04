@@ -364,7 +364,7 @@ const Organizations = ({
         e.preventDefault();
         onClick(e);
       }}
-      className="text-muted text-primary-hover"
+      className="text-muted text-primary-hover custom-link"
     >
       {children}
     </Link>
@@ -393,7 +393,7 @@ const Organizations = ({
     </Dropdown>
   );
   const ActionMoreMenu = ({ userID, status, userEmail, emailVerify }) => (
-    <Button onClick={() => {}} className="more-btn" variant="outline-dark">
+    <Button onClick={() => {}} className="more-btn custom-more-cta" variant="outline-dark">
       <Dropdown>
         <Dropdown.Toggle as={CustomToggleMore}>More +</Dropdown.Toggle>
         <Dropdown.Menu align={"end"}>
