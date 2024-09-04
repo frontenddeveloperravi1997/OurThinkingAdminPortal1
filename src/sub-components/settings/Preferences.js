@@ -43,7 +43,10 @@ defaultValues.countryId.split('|').forEach(item => {
   initialSelection[region][country] = true;
 });
 //console.log('initialSelection--',initialSelection);
+  //console.log('defaultValues?.topicId--',defaultValues?.topicId);
+
   
+
   const selectedLanguage = defaultValues?.language;
   const selectedFirmContacts = defaultValues?.firmContact && new Set(defaultValues?.firmContact?.split('|'));
 

@@ -35,6 +35,9 @@ const MultiCheckTopicSelection = ({
   //     .join("|");
   // };
 
+  console.log('initialSelection-->',initialSelection);
+
+
   const generateSelectionString = (checkedRegions) => {
     return Object.keys(checkedRegions)
       .map((region) => {
@@ -57,6 +60,7 @@ const MultiCheckTopicSelection = ({
   const [selectAll, setSelectAll] = useState(false);
   const [isSelectAllClicked, setIsSelectAllClicked] = useState(false);
 
+  
   const parseInitialSelection = (selectionString) => {
     const selection = {};
     const regions = selectionString.split("|");
@@ -65,12 +69,17 @@ const MultiCheckTopicSelection = ({
       if (!selection[region]) {
         selection[region] = {};
       }
-      countries.forEach((country) => {
-        selection[region][country] = true;
-      });
+      if (countries.length === 0) {
+        selection[region].checked = true;
+      } else {
+        countries.forEach((country) => {
+          selection[region][country] = true;
+        });
+      }
     });
     return selection;
   };
+  
 
   useEffect(() => {
     if (initialSelection) {
@@ -79,6 +88,9 @@ const MultiCheckTopicSelection = ({
       // setSelectAll(areAllCountriesChecked(initialCheckedRegions));
     }
   }, [initialSelection]);
+
+  console.log('topicList-->', topicList);
+  console.log('checkedRegions-->', checkedRegions);
 
   // const areAllCountriesChecked = (newState = checkedRegions) => {
   //   return Object.values(newState).every((region) =>

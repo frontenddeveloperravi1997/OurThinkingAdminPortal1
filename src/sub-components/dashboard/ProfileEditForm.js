@@ -186,10 +186,6 @@ const ProfileEditForm = ({
   
     const isLanguage = data?.language === "";
     const isTopic = data?.topicId === "";
-    console.log('data.topicId-->', data?.topicId);
-    console.log('Type of data.topicId-->', typeof data?.topicId);
-    console.log('Comparison result:', data?.topicId === "");
-    console.log('isTopic-->', isTopic); 
     const isCountry = data?.countryId === "";
     const anyNotEmpty = !isLanguage || !isTopic || !isCountry;
     const allEmpty = isLanguage && isTopic && isCountry;
