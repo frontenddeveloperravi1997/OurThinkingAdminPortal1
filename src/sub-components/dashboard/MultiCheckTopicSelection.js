@@ -60,7 +60,7 @@ const MultiCheckTopicSelection = ({
   const [selectAll, setSelectAll] = useState(false);
   const [isSelectAllClicked, setIsSelectAllClicked] = useState(false);
 
-  
+    
   const parseInitialSelection = (selectionString) => {
     const selection = {};
     const regions = selectionString.split("|");

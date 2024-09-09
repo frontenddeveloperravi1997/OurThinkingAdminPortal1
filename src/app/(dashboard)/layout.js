@@ -20,16 +20,16 @@ export default function DashboardLayout({ children }) {
 	const ToggleMenu = () => {
 		return setShowMenu(!showMenu);
 	};
-	useEffect(()=>{
-		//console.log("isAuthenticated",isAuthenticated,inProgress)
-		if(isAuthenticated===false && inProgress==="none"){
-			setIsLoading(false);
-			//console.log("isAuthenticated",isAuthenticated)
-		    router.replace("/")
-		}else{
-			setIsLoading(false)
-		}
-	   },[isAuthenticated,inProgress]);
+	// useEffect(()=>{
+	// 	//console.log("isAuthenticated",isAuthenticated,inProgress)
+	// 	if(isAuthenticated===false && inProgress==="none"){
+	// 		setIsLoading(false);
+	// 		//console.log("isAuthenticated",isAuthenticated)
+	// 	    router.replace("/")
+	// 	}else{
+	// 		setIsLoading(false)
+	// 	}
+	//    },[isAuthenticated,inProgress]);
 
 	
 

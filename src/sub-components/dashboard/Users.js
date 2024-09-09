@@ -80,6 +80,12 @@ const handleChangeMultipleOrganization = () => {
   setMultipleOrganizationPop(true);
 };
 
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();  
+  }
+};
+
 
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
@@ -756,6 +762,7 @@ const handleChangeMultipleOrganization = () => {
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
               </Form>
             </div>
