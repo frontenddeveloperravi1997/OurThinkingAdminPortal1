@@ -89,7 +89,6 @@ const ProfileEditForm = ({
 
   const {
     isPending: isEditPending,
-
     mutate: updateUser,
   } = useMutation({
     mutationFn: async (data) => {
@@ -172,11 +171,11 @@ const ProfileEditForm = ({
     },
   });
   const emailWatch = watch("email");
-  const onSubmit = (data) => {
-    const updatedPermissions = productPermissionsArr?.map((permission) => {
-      const newPermission = { ...permission };
 
-      data?.productPermission?.forEach((item) => {
+  const onSubmit = (data) => {
+    const updatedPermissions = productPermissionsArr.map((permission) => {
+      const newPermission = { ...permission };
+      data.productPermission.forEach((item) => {
         if (newPermission[item.value] !== undefined) {
           newPermission[item.value] = true;
         }
@@ -184,15 +183,81 @@ const ProfileEditForm = ({
       return newPermission;
     });
   
-    const isLanguage = data?.language === "";
-    const isTopic = data?.topicId === "";
-    const isCountry = data?.countryId === "";
+    const dataInstantAlert = data.instantAlert;
+    const dataEmailFreq = data.emailFreq;
+    const isLanguage = data.language !== "";
+    const isTopic = data.topicId !== "";
+    const isCountry = data.countryId !== "";
+    const isProductPermission = data.productPermission !== "";
+    const isUsersInRoles = data.usersInRoles !=="";
+    const allEmpty = !isLanguage && !isTopic && !isCountry;
+    const allFilled = isLanguage && isTopic && isCountry;
     const anyNotEmpty = !isLanguage || !isTopic || !isCountry;
-    const allEmpty = isLanguage && isTopic && isCountry;
-    const allFilled = !isLanguage && !isTopic && !isCountry;
-    if (anyNotEmpty && !(allEmpty || allFilled)) {
+  
+    const transformedRoles =
+    data?.usersInRoles?.length > 0
+      ? data.usersInRoles.map((role) => ({
+          roleId: role.value,
+          userId: user?.userID,
+        }))
+      : null;
+    const commonPayload = {
+      userID: user?.userID,
+      username: user?.username,
+      email: data.email,
+      emailFrequencyID: data.emailFreq?.value,
+      subscriptions: data.topicId === "" ? null : [{
+        subscriptionID: user?.subscriptions?.[0]?.subscriptionID,
+        userID: user?.subscriptions?.[0]?.userID,
+        topicID: data.topicId,
+        countryID: data.countryId,
+        languageID: data.language,
+      }],
+      emailNotifications: user?.emailNotifications,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      contactId: user?.contactId,
+      createdDate: user?.createdDate,
+      lastLoginDate: user?.lastLoginDate,
+      invitationDate: user?.invitationDate,
+      modifiedDate: new Date().toISOString(),
+      exceptionDomain: user?.exceptionDomain,
+      subscribeToInstantAlert: data.instantAlert?.label === "No" ? false : true,
+      unsubscribeFromAlerts: data.instantAlert?.label === "No" ? true : false,
+      organizationID: data.organization?.value === "" ? null : data.organization?.value,
+      emailFrequency: user?.emailFrequency,
+      comparativeGuides: updatedPermissions?.[0],
+      usersInRoles: transformedRoles,
+      organization: user?.organization,
+      email_Verification: user?.email_Verification,
+    };
+  
+    if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && allEmpty) {
+      // Case when email frequency is "Never", instant alert is "No" and all fields are empty
+      updateUser(commonPayload);
+    } else if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "Yes" && allEmpty) {
       setShowError(true);
-      setErrorMsg("Please select Country,Topic and Language");
+      setErrorMsg("Please select Country, Topic and Language");
+      toast.warning("If you select a country, topic, or language, please make sure to select the other two as well.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } 
+    else if (!dataEmailFreq?.label && dataInstantAlert?.label && allEmpty) {
+      updateUser(commonPayload);
+    } else if (!dataEmailFreq?.label && dataInstantAlert?.label && allFilled) {
+      updateUser(commonPayload);
+    } else if (dataEmailFreq?.label  && dataInstantAlert?.label && allFilled) {
+      updateUser(commonPayload);
+    } else if (dataEmailFreq?.label !== "Never" && dataInstantAlert?.label && allEmpty) {
+      setShowError(true);
+      setErrorMsg("Please select Country, Topic and Language");
       toast.warning("If you select a country, topic, or language, please make sure to select the other two as well.", {
         position: "top-right",
         autoClose: 5000,
@@ -204,109 +269,15 @@ const ProfileEditForm = ({
         theme: "colored",
       });
     } else {
-   
-        if (method === "addUser") {
-          const transformedRoles =
-            data?.usersInRoles?.length > 0
-              ? data.usersInRoles.map((role) => ({ roleId: role.value }))
-              : null;
-          createNewUser({
-            userID: 0,
-            username: null,
-            email: data?.email,
-            emailFrequencyID: data?.emailFreq?.value,
-            subscriptions:
-              data?.topicId === ""
-                ? null
-                : [
-                    {
-                      subscriptionID: 0,
-                      userID: 0,
-                      topicID: data?.topicId,
-                      countryID: data?.countryId,
-                      languageID: data?.language,
-                    },
-                  ],
-            emailNotifications: null,
-            firstName: data?.firstName,
-            lastName: data?.lastName,
-            contactId: uuidv4(),
-            // createdDate: new Date().toUTCString(),
-            createdDate:new Date().toISOString(),
-            lastLoginDate: null,
-            invitationDate: null,
-            modifiedDate: null,
-            exceptionDomain: null,
-            subscribeToInstantAlert:
-              data?.instantAlert?.label === "No" ? false : true,
-            unsubscribeFromAlerts:
-              data?.instantAlert?.label === "No" ? true : false,
-            organizationID:
-              data?.organization?.value === ""
-                ? null
-                : data?.organization?.value,
-            emailFrequency: null,
-            comparativeGuides: updatedPermissions?.[0],
-
-            usersInRoles: transformedRoles,
-            organization: null,
-            email_Verification: null,
-          });
-        } else if (method === "updateUser") {
-          const transformedRolesEdit =
-            data?.usersInRoles?.length > 0
-              ? data.usersInRoles.map((role) => ({
-                  roleId: role.value,
-                  userId: user?.userID,
-                }))
-              : null;
-          updateUser({
-            userID: user?.userID,
-            username: user?.username,
-            email: data?.email,
-            emailFrequencyID: data?.emailFreq?.value,
-            subscriptions:
-              data?.topicId === ""
-                ? null
-                : [
-                    {
-                      subscriptionID: user?.subscriptions?.[0]?.subscriptionID,
-                      userID: user?.subscriptions?.[0]?.userID,
-                      topicID: data?.topicId,
-                      countryID: data?.countryId,
-                      languageID: data?.language,
-                    },
-                  ],
-            emailNotifications: user?.emailNotifications,
-            firstName: data?.firstName,
-            lastName: data?.lastName,
-            contactId: user?.contactId,
-            createdDate: user?.createdDate,
-            lastLoginDate: user?.lastLoginDate,
-            invitationDate: user?.invitationDate,
-            // modifiedDate: new Date().toUTCString(),
-            modifiedDate: new Date().toISOString(),
-            exceptionDomain: user?.exceptionDomain,
-            subscribeToInstantAlert:
-              data?.instantAlert?.label === "No" ? false : true,
-            unsubscribeFromAlerts:
-              data?.instantAlert?.label === "No" ? true : false,
-            organizationID:
-              data?.organization?.value === ""
-                ? null
-                : data?.organization?.value,
-            emailFrequency: user?.emailFrequency,
-            comparativeGuides: updatedPermissions?.[0],
-
-            usersInRoles: transformedRolesEdit,
-            organization: user?.organization,
-            email_Verification: user?.email_Verification,
-          });
-        }
-      
+      if (method === "addUser") {
+        createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });
+      } else if (method === "updateUser") {
+        updateUser({ ...commonPayload, userID: user?.userID });
+      }
     }
-
   };
+  
+  
 
   const checkEmailExists = async (email) => {
     setEmailValidLoading(true);

@@ -35,7 +35,7 @@ const MultiCheckTopicSelection = ({
   //     .join("|");
   // };
 
-  console.log('initialSelection-->',initialSelection);
+  //console.log('initialSelection-->',initialSelection);
 
 
   const generateSelectionString = (checkedRegions) => {
@@ -89,8 +89,8 @@ const MultiCheckTopicSelection = ({
     }
   }, [initialSelection]);
 
-  console.log('topicList-->', topicList);
-  console.log('checkedRegions-->', checkedRegions);
+  //console.log('topicList-->', topicList);
+  //console.log('checkedRegions-->', checkedRegions);
 
   // const areAllCountriesChecked = (newState = checkedRegions) => {
   //   return Object.values(newState).every((region) =>

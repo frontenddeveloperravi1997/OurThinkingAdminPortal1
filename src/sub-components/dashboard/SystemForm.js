@@ -107,18 +107,26 @@ const [domainCreated,setDomainCreated] = useState(false)
         //console.log('isEdit-->', isEdit);
     
         try {
-            const blackListDomainExists = await isBlackListDomainExists(data?.domainName);
+
+          if(pageName == 'ExceptionDomain'){
             const exceptionListDomainExists = await isExceptionListDomainExists(data?.domainName);
+            if(exceptionListDomainExists) {
+              toast.error('Domain name already exists!!')
+              return
+            }
+          }
+          else
+          {
+            const blackListDomainExists = await isBlackListDomainExists(data?.domainName);           
 
             if (blackListDomainExists) {
               toast.error('Domain name already exists!!')
               return
             }
+          }
+            
 
-            if(exceptionListDomainExists) {
-              toast.error('Domain name already exists!!')
-              return
-            }
+            
    
             if (isEdit === true) {
                 createNewDomain({

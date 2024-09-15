@@ -37,6 +37,7 @@ const UserLanding = () => {
         setLoading(false);
       }
     };
+
     fetchTotalPages();
   }, []);
 

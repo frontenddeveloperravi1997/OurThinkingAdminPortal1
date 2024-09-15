@@ -47,7 +47,7 @@ const OrganizationSearch = ({defaultValue,defaultlabel,setValue}) => {
           setOptions(convertingIntoFromat)
           
         }else{
-          toast.error("Oops something went wrong!", {
+          toast.error("Organization not found!", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,

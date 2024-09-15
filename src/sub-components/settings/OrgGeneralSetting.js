@@ -176,7 +176,7 @@ const handleSaveDomainName = (item) => {
   setUpdateOrganizationWhitelistDomain((prevDomains) => [
     ...prevDomains,
     { 
-      id:item.id,
+      id: typeof item.id === 'string' ? 0 : item.id,
       organizationId:organizationID, 
       domainName:editingDomain.value,
       createdDate: new Date().toISOString()
@@ -420,7 +420,7 @@ useEffect(() => {
 
               </Row>
 
-              <Row className="mb-3">
+              {/* <Row className="mb-3">
                 <Form.Label
                   className="col-sm-3 col-form-label form-label"
                   htmlFor="orgUrl"
@@ -446,7 +446,7 @@ useEffect(() => {
                   />
        {errors.orgUrl && <Form.Control.Feedback type="invalid">Invalid url</Form.Control.Feedback>}
                 </Col>
-              </Row>
+              </Row> */}
 
               <Row className="mb-3">
                 <Form.Label className="col-sm-3" htmlFor="isInternalOrg">
@@ -471,7 +471,7 @@ useEffect(() => {
    Auto login url
  </Form.Label>
  <Col sm={8} className="mb-3 mb-lg-0">
-   <Form.Control
+   <Form.Control disabled
      isInvalid={!!errors.autoLoginUrl}
      type="text"
      placeholder=""

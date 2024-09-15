@@ -39,17 +39,40 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [checkedUsers, setCheckedUsers] = useState({});
   const [file, setFile] = useState(null);
   const [fileUploadLoading,setFileUploadLoading] = useState(false);
-  const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
-    setCheckedUsers((prevCheckedUsers) => ({
-      ...prevCheckedUsers,
-      [userID]: {
-        userEmail,
-        emailVerify,
-        status,
-        isChecked: !prevCheckedUsers[userID]?.isChecked,
-      },
-    }));
-  };
+  // const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
+  //   setCheckedUsers((prevCheckedUsers) => ({
+  //     ...prevCheckedUsers,
+  //     [userID]: {
+  //       userEmail,
+  //       emailVerify,
+  //       status,
+  //       isChecked: !prevCheckedUsers[userID]?.isChecked,
+  //     },
+  //   }));
+  // };
+
+  const handleCheckboxChange = (userID, userEmail, emailVerify, status) => {
+    setCheckedUsers((prevCheckedUsers) => {
+        const isChecked = prevCheckedUsers[userID]?.isChecked;
+
+        if (isChecked) {
+            // Uncheck the user (remove from the checkedUsers)
+            const { [userID]: _, ...rest } = prevCheckedUsers; // Remove userID from the state
+            return rest;
+        } else {
+            // Check the user (add/update in the checkedUsers)
+            return {
+                ...prevCheckedUsers,
+                [userID]: {
+                    userEmail,
+                    emailVerify,
+                    status,
+                    isChecked: true,
+                },
+            };
+        }
+    });
+};
   const isCheckedUsersNotEmpty = Object.keys(checkedUsers).some(
     (key) => checkedUsers[key].isChecked
   );
@@ -396,10 +419,10 @@ const handleKeyDown = (e) => {
       status,
     });
   };
+  const handleInvite = (email) => {
+    inviteUser([email]);
+  };
 
-  // const handleInvite = (email) => {
-  //   inviteUser([email]);
-  // };
   const handleMultipleReset = () =>{
     const getCheckedUserEmails = Object.keys(checkedUsers)
     .filter((key) => checkedUsers[key].isChecked)
@@ -407,13 +430,21 @@ const handleKeyDown = (e) => {
     resetPassword(getCheckedUserEmails);
 
   }
-  const handleMultipleSendInvite = () =>{
-    const verifiedAndCheckedEmails = Object.keys(checkedUsers)
-    .filter(key => checkedUsers[key].isChecked && checkedUsers[key].emailVerify === "Verified")
-    .map(key => checkedUsers[key].userEmail);
-     resetPassword(verifiedAndCheckedEmails);
+  // const handleMultipleSendInvite = () =>{
+  //   const verifiedAndCheckedEmails = Object.keys(checkedUsers)
+  //   .filter(key => checkedUsers[key].isChecked && checkedUsers[key].emailVerify === "Verified")
+  //   .map(key => checkedUsers[key].userEmail);
+  //   inviteUser(verifiedAndCheckedEmails);
+  // }
 
-  }
+  const handleMultipleSendInvite = () => {
+        const verifiedAndCheckedEmails = Object.keys(checkedUsers)
+        .filter(key => checkedUsers[key].isChecked && (checkedUsers[key].emailVerify !== "Verified" && checkedUsers[key].emailVerify !== "Sent"))
+        .map(key => checkedUsers[key].userEmail);
+    
+    inviteUser(verifiedAndCheckedEmails); 
+};
+
   const handleResetPassword = (email) => {
     resetPassword([email]);
   };
@@ -616,7 +647,7 @@ const handleKeyDown = (e) => {
         eventKey="1"
         onClick={handleMultipleSendInvite}
       >
-        {isPendingReset ? "Sending Invite.." : "Send Invitation"}
+          {isPendingInvite ? "Sending Invite.." : "Send Invitation"}
       </Dropdown.Item>
       <Dropdown.Item onClick={handleMultipleReset} eventKey="2">
         {isPendingReset ? "Sending..." : "Reset Password"}
