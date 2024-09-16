@@ -26,7 +26,7 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
         const validFormat = /^([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+)(\|([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+))*\|?$/;
     
         if (!validFormat.test(inputValue)) {
-            toast.error("Please enter values in the correct format: Parent#Child|Parent#Child| which is given in note", {
+            toast.error("The input value is invalid.", {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -135,9 +135,9 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
                             onChange={handleInputChange}
                         />
                     <div className="instructions-for-user">
-                    <b>Note:Please enter the values in below format</b>
+                    <h5>Note: Please enter the values in below format</h5>
                     <div>
-                    <h6>Administrative and Public Law#Public Law|Administrative and Public Law#Judicial Review|Employment|</h6>
+                    <h6>Parent#Child|Parent#Child|</h6>
                     </div>
                     </div>
                     

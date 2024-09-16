@@ -233,7 +233,6 @@ const ProfileEditForm = ({
     };
   
     if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && allEmpty) {
-      // Case when email frequency is "Never", instant alert is "No" and all fields are empty
       updateUser(commonPayload);
     } else if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "Yes" && allEmpty) {
       setShowError(true);
@@ -406,4 +405,4 @@ const ProfileEditForm = ({
   );
 };
 
-export default ProfileEditForm;
+export default ProfileEditForm;  

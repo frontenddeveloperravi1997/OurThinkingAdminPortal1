@@ -11,7 +11,7 @@ import { isBlackListDomainExists } from '@/app/api/datalist';
 import { isExceptionListDomainExists } from '@/app/api/datalist';
 
 const SystemForm = ({pageName,isEdit,domain={}}) => {
-console.log('pageName-->',pageName);
+// console.log('pageName-->',pageName);
 const router = useRouter()
 const [domainCreated,setDomainCreated] = useState(false)
    
