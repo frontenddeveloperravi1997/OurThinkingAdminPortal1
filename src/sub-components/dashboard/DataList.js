@@ -210,14 +210,14 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
     useEffect(() => {
         const fetchOptions = async () => {
           if (searchQuery.trim() === "") {
-            fetchListData();
+            fetchListData();            
           }
           try {
             const response = await fetchData(null, searchQuery);
     
             if (response?.statusCode === 200) {
                 setData(response.data?.data);
-    
+                setTotalPages(response?.data?.totalPages);
               // setLoading(false)
             } 
             else if(response?.statusCode === 204){

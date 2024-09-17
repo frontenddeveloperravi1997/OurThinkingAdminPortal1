@@ -265,7 +265,7 @@ const Organizations = ({
 
         if (response?.statusCode === 200) {
           setOrganizations(response.data?.data);
-
+          setTotalPages(response?.data?.totalPages);
           // setLoading(false)
         } else if (response?.statusCode === 204) {
           toast.warning("No organization found!", {

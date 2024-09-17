@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState,useRef } from "react";
 import Link from "next/link";
 import { Card, Table, Dropdown, Form, Button } from "react-bootstrap";
@@ -498,7 +499,7 @@ const handleKeyDown = (e) => {
 
         if (response?.statusCode === 200) {
           setUsers(response.data?.data);
-
+          setTotalPages(response?.data?.totalPages);
           // setLoading(false)
         } else if(response?.statusCode === 204){
           toast.warning('No user found!', {
