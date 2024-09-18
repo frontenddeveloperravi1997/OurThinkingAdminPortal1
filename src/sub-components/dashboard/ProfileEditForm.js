@@ -192,6 +192,8 @@ const ProfileEditForm = ({
     const isUsersInRoles = data.usersInRoles !=="";
     const allEmpty = !isLanguage && !isTopic && !isCountry;
     const allFilled = isLanguage && isTopic && isCountry;
+    const partialFilled = allEmpty || (isLanguage && !isTopic && !isCountry) || (!isLanguage && isTopic && !isCountry) || (!isLanguage && !isTopic && isCountry) || (isLanguage && !isTopic && isCountry) || (!isLanguage && isTopic && isCountry) || (isLanguage && isTopic && !isCountry);
+    const neverNoPartialFilled = (isLanguage && !isTopic && !isCountry) || (!isLanguage && isTopic && !isCountry) || (!isLanguage && !isTopic && isCountry) || (isLanguage && !isTopic && isCountry) || (!isLanguage && isTopic && isCountry) || (isLanguage && isTopic && !isCountry); 
     const anyNotEmpty = !isLanguage || !isTopic || !isCountry;
   
     const transformedRoles =
@@ -233,11 +235,33 @@ const ProfileEditForm = ({
     };
   
     if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && allEmpty) {
-      updateUser(commonPayload);
-    } else if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "Yes" && allEmpty) {
+      if (method === "addUser") {
+        createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });
+      } else if (method === "updateUser") {
+        updateUser(commonPayload);
+      }
+    } else if (!dataEmailFreq?.label && dataInstantAlert?.label === "No" && allEmpty) {
+      if (method === "addUser") {
+        createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });
+      } else if (method === "updateUser") {
+        updateUser(commonPayload);
+      }
+    } else if (!dataEmailFreq?.label && dataInstantAlert?.label && allFilled) {
+      if (method === "addUser") {
+        createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });
+      } else if (method === "updateUser") {
+        updateUser(commonPayload);
+      }
+    } else if (dataEmailFreq?.label  && dataInstantAlert?.label && allFilled) {
+      if (method === "addUser") {
+        createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });
+      } else if (method === "updateUser") {
+        updateUser(commonPayload);
+      }
+    } else if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && neverNoPartialFilled) {
       setShowError(true);
       setErrorMsg("Please select Country, Topic and Language");
-      toast.warning("If you select a country, topic, or language, please make sure to select the other two as well.", {
+      toast.warning("Please select Country, Topic and Language also !!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -247,17 +271,50 @@ const ProfileEditForm = ({
         progress: undefined,
         theme: "colored",
       });
-    } 
-    else if (!dataEmailFreq?.label && dataInstantAlert?.label && allEmpty) {
-      updateUser(commonPayload);
-    } else if (!dataEmailFreq?.label && dataInstantAlert?.label && allFilled) {
-      updateUser(commonPayload);
-    } else if (dataEmailFreq?.label  && dataInstantAlert?.label && allFilled) {
-      updateUser(commonPayload);
-    } else if (dataEmailFreq?.label !== "Never" && dataInstantAlert?.label && allEmpty) {
+    }
+    else if (dataEmailFreq?.label !== "Never" && dataInstantAlert?.label === "No" && partialFilled) {
       setShowError(true);
       setErrorMsg("Please select Country, Topic and Language");
-      toast.warning("If you select a country, topic, or language, please make sure to select the other two as well.", {
+      toast.warning("Please select Country, Topic and Language also !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else if (dataEmailFreq?.label && dataInstantAlert?.label === "Yes" && partialFilled) {
+      setShowError(true);
+      setErrorMsg("Please select Country, Topic and Language");
+      toast.warning("Please select Country, Topic and Language also !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }  else if (!dataEmailFreq?.label && dataInstantAlert?.label === "Yes" && partialFilled) {
+      setShowError(true);
+      setErrorMsg("Please select Country, Topic and Language");
+      toast.warning("Please select Country, Topic and Language also !!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }  else if (dataEmailFreq?.label !== "Never" && dataInstantAlert?.label && allEmpty) {
+      setShowError(true);
+      setErrorMsg("Please select Country, Topic and Language");
+      toast.warning("Please select Country, Topic and Language also !!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
