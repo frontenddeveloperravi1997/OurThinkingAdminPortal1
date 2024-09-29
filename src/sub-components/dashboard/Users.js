@@ -107,6 +107,7 @@ const handleChangeMultipleOrganization = () => {
 const handleKeyDown = (e) => {
   if (e.key === "Enter") {
     e.preventDefault();  
+    fetchOptions();     // Once the user presses Enter, the empty tables become filled
   }
 };
 
@@ -271,8 +272,7 @@ const handleKeyDown = (e) => {
     mutationFn: async (data) => {
       return await commonQuery("POST", `/api/User/InviteUser`, data);
     },
-    onSuccess(data, variables, context) {
-  
+    onSuccess(data, variables, context) {  
       if (data?.data?.statusCode === 200) {
         toast.success("Invite Sent successfully", {
           position: "top-right",
@@ -316,14 +316,12 @@ const handleKeyDown = (e) => {
 
   const {
     isPending: isPendingReset,
-
     mutate: resetPassword,
   } = useMutation({
     mutationFn: async (data) => {
       return await commonQuery("POST", `/api/User/resetPassword`, data);
     },
-    onSuccess(data, variables, context) {
- 
+    onSuccess(data, variables, context) { 
       if (data?.data?.statusCode === 200) {
         toast.success("Sent successfully", {
           position: "top-right",
@@ -366,14 +364,12 @@ const handleKeyDown = (e) => {
   // delete multiple users
   const {
     isPending: isPendingDelete,
-
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
       return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
     },
-    onSuccess(data, variables, context) {
- 
+    onSuccess(data, variables, context) { 
       if (data?.data?.statusCode === 200) {
         toast.success("Successfully Deleted", {
           position: "top-right",
@@ -429,7 +425,6 @@ const handleKeyDown = (e) => {
     .filter((key) => checkedUsers[key].isChecked)
     .map((key) => checkedUsers[key].userEmail);
     resetPassword(getCheckedUserEmails);
-
   }
   // const handleMultipleSendInvite = () =>{
   //   const verifiedAndCheckedEmails = Object.keys(checkedUsers)
@@ -439,16 +434,16 @@ const handleKeyDown = (e) => {
   // }
 
   const handleMultipleSendInvite = () => {
-        const verifiedAndCheckedEmails = Object.keys(checkedUsers)
-        .filter(key => checkedUsers[key].isChecked && (checkedUsers[key].emailVerify !== "Verified" && checkedUsers[key].emailVerify !== "Sent"))
-        .map(key => checkedUsers[key].userEmail);
-    
+    const verifiedAndCheckedEmails = Object.keys(checkedUsers)
+    .filter(key => checkedUsers[key].isChecked && (checkedUsers[key].emailVerify !== "Verified"))
+    .map(key => checkedUsers[key].userEmail);    
     inviteUser(verifiedAndCheckedEmails); 
-};
+  };
 
   const handleResetPassword = (email) => {
     resetPassword([email]);
   };
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -486,52 +481,32 @@ const handleKeyDown = (e) => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchUsers();
-  }, [pageNumber]);
-  useEffect(() => {
-    const fetchOptions = async () => {
-      if (searchQuery.trim() === "") {
-        fetchUsers();
-      }
-      try {
-        const response = await getUsersList(null, searchQuery);
-
-        if (response?.statusCode === 200) {
-          setUsers(response.data?.data);
-          setTotalPages(response?.data?.totalPages);
-          // setLoading(false)
-        } else if(response?.statusCode === 204){
-          toast.warning('No user found!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-           
-            });
-        }
-        
-        else {
-          toast.error('Oops something went wrong!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-           
-            });
-        }
-
-    
-        // setOptions(response.data); // Assuming the API returns an array of options
-      } catch (error) {
+  // fetchOptions fetching users on the basis of searchQuery
+  const fetchOptions = async () => {
+    if (searchQuery.trim() === "") {
+      fetchUsers();
+    }
+    try {
+      const response = await getUsersList(null, searchQuery);
+      if (response?.statusCode === 200) {
+        setUsers(response.data?.data);
+        setTotalPages(response?.data?.totalPages);
+        // setLoading(false)
+      } else if(response?.statusCode === 204){
+        setUsers([]);
+        setTotalPages(1);        
+        toast.warning('No user found!!', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",         
+          });
+      }      
+      else {
         toast.error('Oops something went wrong!', {
           position: "top-right",
           autoClose: 5000,
@@ -540,19 +515,36 @@ const handleKeyDown = (e) => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "colored",
-         
+          theme: "colored",         
           });
-        // Handle error appropriately
       }
-    };
 
-    // Debounce the API call to avoid making a call for every keystroke
-    const delayDebounce = setTimeout(() => {
-      fetchOptions();
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
+  
+      // setOptions(response.data); // Assuming the API returns an array of options
+    } catch (error) {
+      toast.error('Oops something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+       
+        });
+      // Handle error appropriately
+    }
+  };
+  
+  useEffect(() => {
+    fetchUsers();
+  }, [pageNumber]);
+  
+  useEffect(() => {
+    // length of the searchQuery is greater than 2 characters,then API called
+    if(searchQuery.length>2)
+      fetchOptions();        
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, email) => {
@@ -567,8 +559,7 @@ const handleKeyDown = (e) => {
     setShowActionPop(false);
   };
 
-  const handleMultipleDelete = () =>{
-  
+  const handleMultipleDelete = () =>{  
     const getCheckedUsers = Object.keys(checkedUsers)
     .filter(key => checkedUsers[key].isChecked)
     .map(key => Number(key));

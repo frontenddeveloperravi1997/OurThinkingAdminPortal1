@@ -43,6 +43,7 @@ const Organizations = ({
   const handleDisableEnter = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      fetchOptions();    // Once the user presses Enter, the empty tables become filled
     }
   };
   const handleChangeMultipleDomain = () => {
@@ -68,7 +69,6 @@ const Organizations = ({
     setExportLoading(true);
     try {
       const response = await exportAllOrgReport();
-
       toast.success("Organization file downloaded successfully!!", {
         position: "top-right",
         autoClose: 5000,
@@ -96,10 +96,8 @@ const Organizations = ({
   };
 
   //delete org
-
   const {
     isPending: isPendingDelete,
-
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
@@ -254,45 +252,31 @@ const Organizations = ({
   useEffect(() => {
     fetchOrganizations();
   }, [pageNumber]);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      if (searchQuery.trim() === "") {
-        fetchOrganizations();
-      }
-      try {
-        const response = await organizationList(null, searchQuery);
-
-        if (response?.statusCode === 200) {
-          setOrganizations(response.data?.data);
-          setTotalPages(response?.data?.totalPages);
-          // setLoading(false)
-        } else if (response?.statusCode === 204) {
-          toast.warning("No organization found!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        } else {
-          toast.error("Oops something went wrong!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        }
-
-        // setOptions(response.data); // Assuming the API returns an array of options
-      } catch (error) {
+// fetchOptions fetching Organizations on the basis of searchQuery
+  const fetchOptions = async () => {
+    if (searchQuery.trim() === "") {
+      fetchOrganizations();
+    }
+    try {
+      const response = await organizationList(null, searchQuery);
+      if (response?.statusCode === 200) {
+        setOrganizations(response.data?.data);
+        setTotalPages(response?.data?.totalPages);
+        // setLoading(false)
+      } else if (response?.statusCode === 204) {
+        setOrganizations([]);
+        setTotalPages(1);
+        toast.warning("No organization found!!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
         toast.error("Oops something went wrong!", {
           position: "top-right",
           autoClose: 5000,
@@ -303,16 +287,28 @@ const Organizations = ({
           progress: undefined,
           theme: "colored",
         });
-        // Handle error appropriately
       }
-    };
+      // setOptions(response.data); // Assuming the API returns an array of options
+    } catch (error) {
+      toast.error("Oops something went wrong!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      // Handle error appropriately
+    }
+  };
 
-    // Debounce the API call to avoid making a call for every keystroke
-    const delayDebounce = setTimeout(() => {
+  useEffect(() => {   
+    // length of the searchQuery is greater than 2 characters,then API called
+    if(searchQuery.length>2){
       fetchOptions();
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
+    }
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, name) => {
