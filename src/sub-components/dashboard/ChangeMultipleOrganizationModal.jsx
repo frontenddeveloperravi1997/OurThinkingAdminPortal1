@@ -6,7 +6,7 @@ import { commonQuery } from "@/app/api/user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {  toast } from 'react-toastify';
 import Spinner from "react-bootstrap/Spinner";
-import { organizationList } from '@/app/api/organization';
+import { organizationList, getOrgnizationData } from '@/app/api/organization';
 import { updateUserAddToGroup } from '@/app/api/user';
 
 const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryList,setCheckedUsers}) => {
@@ -143,12 +143,32 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
                     Organization
                   </Form.Label>
                   <Col md={8} xs={12}>
+                  {/* <Select
+                    options={updatedOrganizationList}
+                    onChange={handleOrganizationSelect}
+                    placeholder="Select Organization"
+                    isClearable
+                    value={selectedOrganization}
+                    styles={{
+                      menu: (provided) => ({
+                        ...provided,
+                        zIndex: 9999, // Increase the z-index value as needed
+                      }),
+                    }}
+                  /> */}
+
                   <Select
                     options={updatedOrganizationList}
                     onChange={handleOrganizationSelect}
                     placeholder="Select Organization"
                     isClearable
                     value={selectedOrganization}
+                    onInputChange={(inputValue) => {
+                      if (inputValue.length >= 3) {
+                        console.log("User typed 3 or more characters & api called https://eus-uat-ot-users-api.azurewebsites.net/api/Organization?search=ras:", inputValue);
+                        getOrgnizationData(inputValue); 
+                      }
+                    }}
                     styles={{
                       menu: (provided) => ({
                         ...provided,
