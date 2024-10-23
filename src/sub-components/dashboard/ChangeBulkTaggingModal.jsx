@@ -23,7 +23,8 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
 
         //console.log("Entered Tags:", inputValue);
     
-        const validFormat = /^([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+)(\|([A-Za-z\s]+#[A-Za-z\s]+|[A-Za-z\s]+))*\|?$/;
+        const validFormat = /^([A-Za-z\s]+#[A-Za-z\s-]+|[A-Za-z\s]+)(\|([A-Za-z\s]+#[A-Za-z\s-]+|[A-Za-z\s]+))*\|?$/;
+
     
         if (!validFormat.test(inputValue)) {
             toast.error("The input value is invalid.", {
