@@ -14,9 +14,9 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
     const [updatedOrganizationList, setUpdatedOrganizationList] = useState([]);
     const [loading, setLoading] = useState(false); 
 
-    const fetchUpdatedOrganizationData = async () => {
+    const fetchUpdatedOrganizationData = async (pageNumber=null,searchTerm=null) => {
         try {
-          const organizationData = await organizationList();
+          const organizationData = await organizationList(pageNumber,searchTerm);
           if (organizationData?.statusCode === 200) {
             const formattedOrganizationData = organizationData?.data?.data.map((item) => ({
               value: item?.organizationId,
@@ -143,30 +143,16 @@ const ChangeMultipleOrganizationModal = ({show,onClose,checkedUsers,orgCategoryL
                     Organization
                   </Form.Label>
                   <Col md={8} xs={12}>
-                  {/* <Select
-                    options={updatedOrganizationList}
-                    onChange={handleOrganizationSelect}
-                    placeholder="Select Organization"
-                    isClearable
-                    value={selectedOrganization}
-                    styles={{
-                      menu: (provided) => ({
-                        ...provided,
-                        zIndex: 9999, // Increase the z-index value as needed
-                      }),
-                    }}
-                  /> */}
-
+                  
                   <Select
                     options={updatedOrganizationList}
                     onChange={handleOrganizationSelect}
                     placeholder="Select Organization"
                     isClearable
                     value={selectedOrganization}
-                    onInputChange={(inputValue) => {
-                      if (inputValue.length >= 3) {
-                        console.log("User typed 3 or more characters & api called https://eus-uat-ot-users-api.azurewebsites.net/api/Organization?search=ras:", inputValue);
-                        getOrgnizationData(inputValue); 
+                    onInputChange={(inputValue)=>{
+                      if(inputValue.length >= 3){
+                        fetchUpdatedOrganizationData(null, inputValue);
                       }
                     }}
                     styles={{

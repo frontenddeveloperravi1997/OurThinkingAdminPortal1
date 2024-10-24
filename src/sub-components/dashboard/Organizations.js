@@ -304,9 +304,8 @@ const Organizations = ({
     }
   };
 
-  useEffect(() => {   
-    // length of the searchQuery is greater than 2 characters,then API called
-    if(searchQuery.length>2){
+  useEffect(() => {
+    if (searchQuery.length > 2 && searchQuery.length < 4) {
       fetchOptions();
     }
   }, [searchQuery]);

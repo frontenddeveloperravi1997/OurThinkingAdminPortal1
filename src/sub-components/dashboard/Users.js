@@ -482,7 +482,8 @@ const handleKeyDown = (e) => {
     }
   };
   // fetchOptions fetching users on the basis of searchQuery
-  const fetchOptions = async () => {
+  const fetchOptions = async () => 
+  {
     if (searchQuery.trim() === "") {
       fetchUsers();
     }
@@ -542,9 +543,9 @@ const handleKeyDown = (e) => {
   }, [pageNumber]);
   
   useEffect(() => {
-    // length of the searchQuery is greater than 2 characters,then API called
-    if(searchQuery.length>2)
-      fetchOptions();        
+    if (searchQuery.length > 2 && searchQuery.length < 4) {
+      fetchOptions();
+    }
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, email) => {
