@@ -264,18 +264,22 @@ const Organizations = ({
         setTotalPages(response?.data?.totalPages);
         // setLoading(false)
       } else if (response?.statusCode === 204) {
+        const toastId = "no-organization-found";
         setOrganizations([]);
         setTotalPages(1);
-        toast.warning("No organization found!!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        if (!toast.isActive(toastId)){        
+          toast.warning("No organization found!!", {
+            toastId,
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       } else {
         toast.error("Oops something went wrong!", {
           position: "top-right",
@@ -305,7 +309,7 @@ const Organizations = ({
   };
 
   useEffect(() => {
-    if (searchQuery.length > 2 && searchQuery.length < 4) {
+    if (searchQuery.length > 2) {
       fetchOptions();
     }
   }, [searchQuery]);

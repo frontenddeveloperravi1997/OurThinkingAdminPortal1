@@ -212,8 +212,10 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
           // setLoading(false)
         } 
         else if(response?.statusCode === 204){
+          const toastId = "no-found";
           setData([]);
           setTotalPages(1);
+          if (!toast.isActive(toastId)){  
             toast.warning('No results found!!', {
               position: "top-right",
               autoClose: 5000,
@@ -223,7 +225,8 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
               draggable: true,
               progress: undefined,
               theme: "colored",             
-              });
+              });          
+            }
           }
         else {
             toast.error('Oops something went wrong!', {
@@ -256,7 +259,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
 
     useEffect(() => {    
       // length of the searchQuery is greater than 2 characters,then API called
-      if (searchQuery.length > 2 && searchQuery.length < 4) {
+      if (searchQuery.length > 2) {
           fetchOptions();
         }        
       }, [searchQuery]);

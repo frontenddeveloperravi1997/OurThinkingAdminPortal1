@@ -21,14 +21,14 @@ export default function DashboardLayout({ children }) {
 		return setShowMenu(!showMenu);
 	};
 	// useEffect(() => {
-		// //console.log("isAuthenticated",isAuthenticated,inProgress)
-		// if (isAuthenticated === false && inProgress === "none") {
-			// setIsLoading(false);
-			// //console.log("isAuthenticated",isAuthenticated) 
-			// router.replace("/")
-		// } else {
-			// setIsLoading(false)
-		// }
+	// 	//console.log("isAuthenticated",isAuthenticated,inProgress)
+	// 	if (isAuthenticated === false && inProgress === "none") {
+	// 		setIsLoading(false);
+	// 		//console.log("isAuthenticated",isAuthenticated) 
+	// 		router.replace("/")
+	// 	} else {
+	// 		setIsLoading(false)
+	// 	}
 	// }, [isAuthenticated, inProgress]);
 
 	return (

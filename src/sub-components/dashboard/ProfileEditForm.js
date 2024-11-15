@@ -173,6 +173,8 @@ const ProfileEditForm = ({
   const emailWatch = watch("email");
 
   const onSubmit = (data) => {
+    console.log(data,'onsubmitdata----')
+
     const updatedPermissions = productPermissionsArr.map((permission) => {
       const newPermission = { ...permission };
       data.productPermission.forEach((item) => {
@@ -182,7 +184,6 @@ const ProfileEditForm = ({
       });
       return newPermission;
     });
-  
     const dataInstantAlert = data.instantAlert;
     const dataEmailFreq = data.emailFreq;
     const isLanguage = data.language !== "";
@@ -203,6 +204,7 @@ const ProfileEditForm = ({
           userId: user?.userID,
         }))
       : null;
+      console.log(data.emailFreq?.value, "data.emailFreq?.value")
     const commonPayload = {
       userID: user?.userID,
       username: user?.username,
@@ -224,8 +226,8 @@ const ProfileEditForm = ({
       invitationDate: user?.invitationDate,
       modifiedDate: new Date().toISOString(),
       exceptionDomain: user?.exceptionDomain,
-      subscribeToInstantAlert: data.instantAlert?.label === "No" ? false : true,
-      unsubscribeFromAlerts: data.instantAlert?.label === "No" ? true : false,
+      subscribeToInstantAlert: !data.instantAlert?null : data.instantAlert?.label === "No" ? false : true,
+      unsubscribeFromAlerts: !data.instantAlert?null : data.instantAlert?.label === "No" ? true : false,
       organizationID: data.organization?.value === "" ? null : data.organization?.value,
       emailFrequency: user?.emailFrequency,
       comparativeGuides: updatedPermissions?.[0],
@@ -233,7 +235,7 @@ const ProfileEditForm = ({
       organization: user?.organization,
       email_Verification: user?.email_Verification,
     };
-  
+    console.log(commonPayload, "commonPayloadcommonPayloadcommonPayload")
     if (dataEmailFreq?.label === "Never" && dataInstantAlert?.label === "No" && allEmpty) {
       if (method === "addUser") {
         createNewUser({ ...commonPayload, userID: 0, contactId: uuidv4(), createdDate: new Date().toISOString() });

@@ -494,18 +494,22 @@ const handleKeyDown = (e) => {
         setTotalPages(response?.data?.totalPages);
         // setLoading(false)
       } else if(response?.statusCode === 204){
+        const toastId = "no-user-found";
         setUsers([]);
-        setTotalPages(1);        
-        toast.warning('No user found!!', {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",         
-          });
+        setTotalPages(1); 
+        if (!toast.isActive(toastId)){
+          toast.warning('No user found!!', {
+            toastId,
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",         
+            });
+        }         
       }      
       else {
         toast.error('Oops something went wrong!', {
@@ -543,7 +547,7 @@ const handleKeyDown = (e) => {
   }, [pageNumber]);
   
   useEffect(() => {
-    if (searchQuery.length > 2 && searchQuery.length < 4) {
+    if (searchQuery.length > 2) {
       fetchOptions();
     }
   }, [searchQuery]);

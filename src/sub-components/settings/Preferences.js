@@ -68,13 +68,16 @@ defaultValues.countryId.split('|').forEach(item => {
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [updatedFrequencyList, setUpdatedFrequencyList] = useState([]);
   //console.log('defaultValues?.emailFreq?.value-->',defaultValues?.emailFreq?.value)
-  const [selectedFreq, setSelectedFreq] = useState(()=>{  
-    // if(defaultValues?.emailFreq?.value === ""){
-    //   return null
-    // }else{
-    //  return defaultValues?.emailFreq
-    // }
-    return defaultValues?.emailFreq
+  const [selectedFreq, setSelectedFreq] = useState(()=>{ 
+    if(defaultValues?.emailFreq?.label == "Never"){
+      setValue("emailFreq", {value: 0, label: 'Never'});
+      return {value: 0, label: 'Never'}
+    }else if(defaultValues?.emailFreq?.value === "" && defaultValues?.emailFreq?.label == ""){
+      return {value: '', label: ''}
+    }else{
+      setValue("emailFreq", defaultValues?.emailFreq);
+     return defaultValues?.emailFreq
+    }
   });
   const [selectedAlert, setSelectedAlert] = useState(
     defaultValues?.instantAlert
@@ -267,6 +270,7 @@ defaultValues.countryId.split('|').forEach(item => {
     fetchRolesData();
   }, []);
 
+  
 
   return (
     <Row className="mb-8">
