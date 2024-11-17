@@ -15,7 +15,7 @@ import ChangeDomainModal from "./ChangeDomainModal";
 import ChangeBulkTaggingModal from "./ChangeBulkTaggingModal";
 import ChangeMultipleOrganizationModal from "./ChangeMultipleOrganizationModal";
 
-const Users = ({ pageNumber, setTotalPages,itemsDisplayed,totalCount }) => {
+const Users = ({ pageNumber, setTotalPages,itemsDisplayed,totalCount,setTotalCount }) => {
   const isMobile = useMediaQuery({
     query: '(max-width: 768px)'
 });
@@ -107,7 +107,7 @@ const handleChangeMultipleOrganization = () => {
 const handleKeyDown = (e) => {
   if (e.key === "Enter") {
     e.preventDefault();  
-    fetchOptions();     // Once the user presses Enter, the empty tables become filled
+    fetchOptions();
   }
 };
 
@@ -492,6 +492,7 @@ const handleKeyDown = (e) => {
       if (response?.statusCode === 200) {
         setUsers(response.data?.data);
         setTotalPages(response?.data?.totalPages);
+        setTotalCount(response?.data?.totalCount)
         // setLoading(false)
       } else if(response?.statusCode === 204){
         const toastId = "no-user-found";

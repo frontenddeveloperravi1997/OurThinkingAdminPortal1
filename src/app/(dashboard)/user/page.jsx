@@ -27,6 +27,7 @@ const UserLanding = () => {
           setInitialData(
             responseData?.data?.data === null ? [] : responseData?.data?.data
           );
+         
           setTotalCount(responseData?.data?.totalCount);
           setLoading(false);
         } else {
@@ -82,6 +83,7 @@ const UserLanding = () => {
                     setTotalPages={setTotalPages}
                     itemsDisplayed={itemsDisplayed}
                     totalCount={totalCount}
+                    setTotalCount={setTotalCount}
                   />
                 </Col>
               </Row>
