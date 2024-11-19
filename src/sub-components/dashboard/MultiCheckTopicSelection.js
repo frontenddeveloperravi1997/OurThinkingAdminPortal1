@@ -205,9 +205,13 @@ const MultiCheckTopicSelection = ({
       </div>
       <div className="d-flex justify-content-between flex-column accordionWrap">
         {Object.keys(topicList)?.map((region, index) => {
+          const isBlankBody = !topicList[region] || topicList[region].length === 0;
           return (
             <Accordion key={index}>
-              <Accordion.Item eventKey={String(index)}>
+              <Accordion.Item 
+                eventKey={String(index)}
+                className={isBlankBody ? "blank-body-found" : ""}
+              >
               <Accordion.Header
                   className={`d-flex flex-row p-0 ${
                     isAnyCountrySelected(region) &&

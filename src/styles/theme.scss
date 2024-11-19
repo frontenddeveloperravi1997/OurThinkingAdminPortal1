@@ -273,5 +273,11 @@
 {
     margin-top:2rem;    
 }
+.blank-body-found .accordion-button:not(.collapsed)::after,
+.blank-body-found .accordion-button::after,
+.blank-body-found .accordion-body
+{
+    display:none;
+}
 /***custom css***/
 
