@@ -14,8 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 import ChangeDomainModal from "./ChangeDomainModal";
 import ChangeBulkTaggingModal from "./ChangeBulkTaggingModal";
 import ChangeMultipleOrganizationModal from "./ChangeMultipleOrganizationModal";
-
-const Users = ({ pageNumber, setTotalPages,itemsDisplayed,totalCount,setTotalCount }) => {
+const Users = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 768px)'
 });
@@ -32,6 +31,8 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [showBulkTaggingPopup,setBulkTaggingPop] = useState(false);
   const [showMultipleOrganizationPopup,setMultipleOrganizationPop] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     userId: "",
     status: "",
@@ -40,6 +41,10 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [checkedUsers, setCheckedUsers] = useState({});
   const [file, setFile] = useState(null);
   const [fileUploadLoading,setFileUploadLoading] = useState(false);
+  const [pageSize,setPageSize] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1);
+  const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
+  const [hasFetched, setHasFetched] = useState(false);
   // const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
   //   setCheckedUsers((prevCheckedUsers) => ({
   //     ...prevCheckedUsers,
@@ -451,7 +456,10 @@ const handleKeyDown = (e) => {
       if (responseData?.statusCode === 200) {
         setTotalPages(responseData?.data?.totalPages);
         setUsers(responseData?.data?.data);
+        setPageSize(responseData?.data?.pageSize)
+        setTotalCount(responseData?.data?.totalCount)
         setCheckedUsers({})
+        setHasFetched(true);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -481,6 +489,7 @@ const handleKeyDown = (e) => {
       setLoading(false);
     }
   };
+
   // fetchOptions fetching users on the basis of searchQuery
   const fetchOptions = async () => 
   {
@@ -544,7 +553,10 @@ const handleKeyDown = (e) => {
   };
   
   useEffect(() => {
-    fetchUsers();
+    if(!hasFetched){
+      console.log("pageNumber--->",pageNumber)
+      fetchUsers();
+    } 
   }, [pageNumber]);
   
   useEffect(() => {
@@ -669,9 +681,9 @@ const handleKeyDown = (e) => {
 
   return (
     <>
-    <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />
-    <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />
-    <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />
+    {showDomainPopup && <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />}
+    {showBulkTaggingPopup && <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />}
+    {showMultipleOrganizationPopup && <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />}
       <CommonModal
         show={showActionPop}
         onClose={handleHideActionPop}

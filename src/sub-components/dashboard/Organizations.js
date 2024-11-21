@@ -16,8 +16,9 @@ const Organizations = ({
   pageNumber,
   setTotalPages,
   itemsDisplayed,
-  totalCount,
   orgCategoryList,
+  totalCount,
+  setTotalCount
 }) => {
   const isMobile = useMediaQuery({
     query: "(max-width: 768px)",
@@ -157,6 +158,7 @@ const Organizations = ({
         setOrganizations(responseData.data?.data);
         setCheckedUsers({});
         setTotalPages(responseData.data?.totalPages);
+        setTotalCount(responseData.data?.totalCount);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -262,6 +264,7 @@ const Organizations = ({
       if (response?.statusCode === 200) {
         setOrganizations(response.data?.data);
         setTotalPages(response?.data?.totalPages);
+        setTotalCount(response?.data?.totalCount);
         // setLoading(false)
       } else if (response?.statusCode === 204) {
         const toastId = "no-organization-found";

@@ -80,8 +80,10 @@ const OrganizationLanding = () => {
                   <Organizations
                     pageNumber={pageNumber}
                     setTotalPages={setTotalPages}
-                    itemsDisplayed={itemsDisplayed} totalCount={totalCount}
+                    itemsDisplayed={itemsDisplayed}
                     orgCategoryList={orgCategoryList}
+                    totalCount={totalCount}
+                    setTotalCount={setTotalCount}
                   />
                 </Col>
               </Row>
