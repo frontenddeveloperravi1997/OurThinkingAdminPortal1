@@ -218,6 +218,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
           if (!toast.isActive(toastId)){  
             toast.warning('No results found!!', {
               position: "top-right",
+              toastId,
               autoClose: 5000,
               hideProgressBar: false,
               closeOnClick: true,

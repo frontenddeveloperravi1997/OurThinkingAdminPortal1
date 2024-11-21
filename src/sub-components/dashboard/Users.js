@@ -554,7 +554,7 @@ const handleKeyDown = (e) => {
   
   useEffect(() => {
     if(!hasFetched){
-      console.log("pageNumber--->",pageNumber)
+      // console.log("pageNumber--->",pageNumber)
       fetchUsers();
     } 
   }, [pageNumber]);

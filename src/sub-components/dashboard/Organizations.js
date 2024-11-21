@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, Table, Dropdown, Form, Button } from "react-bootstrap";
 import { MoreVertical } from "react-feather";
-import { organizationList } from "@/app/api/organization";
+//import { organizationList } from "@/app/api/organization";
 import { formatDate } from "@/utils/formateDate";
 import { toast, ToastContainer } from "react-toastify";
 import Spinner from "react-bootstrap/Spinner";
@@ -10,16 +10,10 @@ import { commonQuery, exportAllOrgReport } from "@/app/api/user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import CommonModal from "./CommonModal";
 import { useRouter } from "next/navigation";
+import { organizationList,organizationCategoryList } from "@/app/api/organization";
 import { useMediaQuery } from "react-responsive";
 import ChangeGroupModal from "./ChangeGroupModal";
-const Organizations = ({
-  pageNumber,
-  setTotalPages,
-  itemsDisplayed,
-  orgCategoryList,
-  totalCount,
-  setTotalCount
-}) => {
+const Organizations = () => {
   const isMobile = useMediaQuery({
     query: "(max-width: 768px)",
   });
@@ -36,6 +30,14 @@ const Organizations = ({
   const [exportLoading, setExportLoading] = useState(false);
   const [checkedUsers, setCheckedUsers] = useState({});
   const [showDomainPopup, setDomainPop] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount,setTotalCount] = useState(null);
+  const [pageSize,setPageSize] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
+  const [orgCategoryList, setOrgCategoryList] = useState([]);
+  const [initialData, setInitialData] = useState([]);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     orgId: "",
     status: "",
@@ -95,6 +97,32 @@ const Organizations = ({
       setExportLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchTotalPages = async () => {
+      setLoading(true);
+      try {
+         const responseData = await organizationList(pageNumber);
+         const orgCategoryData = await organizationCategoryList();
+         setOrgCategoryList(orgCategoryData?.data?.data);
+          if (responseData?.statusCode === 200) {
+          setTotalPages(responseData?.data?.totalPages);
+          setPageSize(responseData?.data?.pageSize)
+          setLoading(false);
+          setInitialData(
+            responseData?.data?.data === null ? [] : responseData?.data?.data
+          );
+          setTotalCount(responseData?.data?.totalCount)
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching total pages:", error);
+        setLoading(false);
+      }
+    };
+    fetchTotalPages();
+  }, []);
 
   //delete org
   const {
@@ -156,9 +184,11 @@ const Organizations = ({
       const responseData = await organizationList(pageNumber);
       if (responseData?.statusCode === 200) {
         setOrganizations(responseData.data?.data);
+        setPageSize(responseData?.data?.pageSize);
         setCheckedUsers({});
         setTotalPages(responseData.data?.totalPages);
         setTotalCount(responseData.data?.totalCount);
+        setHasFetched(true);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -310,6 +340,12 @@ const Organizations = ({
       // Handle error appropriately
     }
   };
+
+  useEffect(() => {
+    if(!hasFetched){
+      // console.log("pageNumber--->",pageNumber);     
+    } 
+  }, [pageNumber]);
 
   useEffect(() => {
     if (searchQuery.length > 2) {
