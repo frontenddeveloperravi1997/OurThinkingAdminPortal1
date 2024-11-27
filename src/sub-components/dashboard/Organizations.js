@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, Table, Dropdown, Form, Button } from "react-bootstrap";
 import { MoreVertical } from "react-feather";
-import { organizationList } from "@/app/api/organization";
 import { formatDate } from "@/utils/formateDate";
 import { toast, ToastContainer } from "react-toastify";
 import Spinner from "react-bootstrap/Spinner";
@@ -10,15 +9,10 @@ import { commonQuery, exportAllOrgReport } from "@/app/api/user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import CommonModal from "./CommonModal";
 import { useRouter } from "next/navigation";
+import { organizationList,organizationCategoryList } from "@/app/api/organization";
 import { useMediaQuery } from "react-responsive";
 import ChangeGroupModal from "./ChangeGroupModal";
-const Organizations = ({
-  pageNumber,
-  setTotalPages,
-  itemsDisplayed,
-  totalCount,
-  orgCategoryList,
-}) => {
+const Organizations = () => {
   const isMobile = useMediaQuery({
     query: "(max-width: 768px)",
   });
@@ -35,6 +29,14 @@ const Organizations = ({
   const [exportLoading, setExportLoading] = useState(false);
   const [checkedUsers, setCheckedUsers] = useState({});
   const [showDomainPopup, setDomainPop] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount,setTotalCount] = useState(null);
+  const [pageSize,setPageSize] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
+  const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
+ 
+  const [initialData, setInitialData] = useState([]);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     orgId: "",
     status: "",
@@ -43,6 +45,7 @@ const Organizations = ({
   const handleDisableEnter = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      fetchOptions();   
     }
   };
   const handleChangeMultipleDomain = () => {
@@ -68,7 +71,6 @@ const Organizations = ({
     setExportLoading(true);
     try {
       const response = await exportAllOrgReport();
-
       toast.success("Organization file downloaded successfully!!", {
         position: "top-right",
         autoClose: 5000,
@@ -95,11 +97,36 @@ const Organizations = ({
     }
   };
 
-  //delete org
+  useEffect(() => {
+    const fetchTotalPages = async () => {
+      setLoading(true);
+      try {
+         const responseData = await organizationList(pageNumber);
 
+          if (responseData?.statusCode === 200) {
+          setTotalPages(responseData?.data?.totalPages);
+          setPageSize(responseData?.data?.pageSize)
+          console.log("responseData--->res",responseData);
+          setOrganizations(responseData.data?.data);
+          setLoading(false);
+          setInitialData(
+            responseData?.data?.data === null ? [] : responseData?.data?.data
+          );
+          setTotalCount(responseData?.data?.totalCount)
+        } else {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching total pages:", error);
+        setLoading(false);
+      }
+    };
+    fetchTotalPages();
+  }, []);
+
+  //delete org
   const {
     isPending: isPendingDelete,
-
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
@@ -110,7 +137,6 @@ const Organizations = ({
       );
     },
     onSuccess(data, variables, context) {
-      console.log("Mutation Success Data:", data);
       if (data?.status === 200) {        
         toast.success("Organization successfully Deleted", {
           position: "top-right",
@@ -135,7 +161,6 @@ const Organizations = ({
           theme: "colored",
         });
       }
-      // fetchUsers()
     },
     onError(error, variables, context) {
       toast.error("Oops something went wrong!", {
@@ -157,8 +182,11 @@ const Organizations = ({
       const responseData = await organizationList(pageNumber);
       if (responseData?.statusCode === 200) {
         setOrganizations(responseData.data?.data);
+        setPageSize(responseData?.data?.pageSize);
         setCheckedUsers({});
         setTotalPages(responseData.data?.totalPages);
+        setTotalCount(responseData.data?.totalCount);
+        setHasFetched(true);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -251,35 +279,23 @@ const Organizations = ({
     },
   });
 
-  useEffect(() => {
-    fetchOrganizations();
-  }, [pageNumber]);
-
-  useEffect(() => {
-    const fetchOptions = async () => {
-      if (searchQuery.trim() === "") {
-        fetchOrganizations();
-      }
-      try {
-        const response = await organizationList(null, searchQuery);
-
-        if (response?.statusCode === 200) {
-          setOrganizations(response.data?.data);
-
-          // setLoading(false)
-        } else if (response?.statusCode === 204) {
-          toast.warning("No organization found!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        } else {
-          toast.error("Oops something went wrong!", {
+  const fetchOptions = async () => {
+    if (searchQuery.trim() === "") {
+      fetchOrganizations();
+    }
+    try {
+      const response = await organizationList(null, searchQuery);
+      if (response?.statusCode === 200) {
+        setOrganizations(response.data?.data);
+        setTotalPages(response?.data?.totalPages);
+        setTotalCount(response?.data?.totalCount);
+      } else if (response?.statusCode === 204) {
+        const toastId = "no-organization-found";
+        setOrganizations([]);
+        setTotalPages(1);
+        if (!toast.isActive(toastId)){        
+          toast.warning("No organization found!!", {
+            toastId,
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -290,9 +306,7 @@ const Organizations = ({
             theme: "colored",
           });
         }
-
-        // setOptions(response.data); // Assuming the API returns an array of options
-      } catch (error) {
+      } else {
         toast.error("Oops something went wrong!", {
           position: "top-right",
           autoClose: 5000,
@@ -303,16 +317,25 @@ const Organizations = ({
           progress: undefined,
           theme: "colored",
         });
-        // Handle error appropriately
       }
-    };
+    } catch (error) {
+      toast.error("Oops something went wrong!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  };
 
-    // Debounce the API call to avoid making a call for every keystroke
-    const delayDebounce = setTimeout(() => {
+  useEffect(() => {
+    if (searchQuery.length > 2) {
       fetchOptions();
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
+    }
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, name) => {
@@ -364,7 +387,7 @@ const Organizations = ({
         e.preventDefault();
         onClick(e);
       }}
-      className="text-muted text-primary-hover"
+      className="text-muted text-primary-hover custom-link"
     >
       {children}
     </Link>
@@ -383,17 +406,12 @@ const Organizations = ({
           passHref
         >
           Edit Organization
-        </Dropdown.Item>
-        {/* {orgStatus !=="active" &&(<Dropdown.Item onClick={()=> handleShowActionPop("active",organizationId,orgName)} eventKey="2">Activate</Dropdown.Item>)}
-                {orgStatus !=="disable" &&(<Dropdown.Item onClick={()=> handleShowActionPop("disable",organizationId,orgName)} eventKey="3">Disable</Dropdown.Item>)}
-                
-                
-                {orgStatus !=="archive" &&(<Dropdown.Item onClick={()=> handleShowActionPop("archive",organizationId,orgName)} eventKey="4">Archive</Dropdown.Item>)} */}
+        </Dropdown.Item>       
       </Dropdown.Menu>
     </Dropdown>
   );
   const ActionMoreMenu = ({ userID, status, userEmail, emailVerify }) => (
-    <Button onClick={() => {}} className="more-btn" variant="outline-dark">
+    <Button onClick={() => {}} className="more-btn custom-more-cta" variant="outline-dark">
       <Dropdown>
         <Dropdown.Toggle as={CustomToggleMore}>More +</Dropdown.Toggle>
         <Dropdown.Menu align={"end"}>
@@ -411,13 +429,12 @@ const Organizations = ({
 
   return (
     <>
-      <ChangeGroupModal
+      {showDomainPopup && <ChangeGroupModal
         show={showDomainPopup}
         onClose={closeChangeDomainPop}
         checkedUsers={checkedUsers}
-        orgCategoryList={orgCategoryList}
         setCheckedUsers={setCheckedUsers}
-      />
+      />}
       <CommonModal
         show={showActionPop}
         onClose={handleHideActionPop}
@@ -494,10 +511,6 @@ const Organizations = ({
               </Button>
               {isCheckedUsersNotEmpty && (
                 <div className={UploadWrap}>
-                  {/* <Button onClick={()=>{}}     variant="outline-dark">
-    More +
-
-  </Button> */}
                   <ActionMoreMenu />
                 </div>
               )}
@@ -534,11 +547,8 @@ const Organizations = ({
             <thead className="table-light">
               <tr>
                 <th></th>
-                {/* <th>Sr/No.</th> */}
-                {/* <th>ID</th> */}
                 <th>Organization Name</th>
                 <th>Users</th>
-                {/* <th>Status</th> */}
                 <th>Created Date</th>
                 <th></th>
               </tr>
@@ -561,14 +571,7 @@ const Organizations = ({
                           )
                         }
                       />
-                      {/* {index + 1 + (pageNumber - 1) * 10} */}
                     </td>
-                    {/* <td className="align-middle">
-                    {index + 1 + (pageNumber - 1) * itemsPerPage}
-                  </td> */}
-                    {/* <td className="align-middle">
-                    {organization?.organizationId}
-                  </td> */}
                     <td className="align-middle">
                       <div className="d-flex align-items-center">
                         <div className="lh-1">
@@ -579,7 +582,6 @@ const Organizations = ({
                       </div>
                     </td>
                     <td className="align-middle">{organization?.userCount}</td>
-                    {/* <td className="align-middle">{organization?.status}</td> */}
                     <td className="align-middle">
                       {formatDate(organization?.createdDate)}
                     </td>

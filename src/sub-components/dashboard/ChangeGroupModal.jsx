@@ -6,9 +6,12 @@ import { commonQuery } from "@/app/api/user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {  toast } from 'react-toastify';
 import Spinner from "react-bootstrap/Spinner";
-const ChangeGroupModal = ({show,onClose,checkedUsers,orgCategoryList,setCheckedUsers}) => {
+import { organizationCategoryList } from "@/app/api/organization";
+const ChangeGroupModal = ({show,onClose,checkedUsers,setCheckedUsers}) => {
     const [selectedOrgCategory,setSelectedOrgCategory]= useState(null);
     const [updatedOrgCategoryList, setUpdatedOrgCategoryList] = useState([]);
+    const [orgCategoryList, setOrgCategoryList] = useState([]);
+    const [isPending, setIsPending] = useState(false);
     //console.log('updatedOrgCategoryList',updatedOrgCategoryList);
     const handleOrgCategorySelect = (selectedOption) => {
         setSelectedOrgCategory(selectedOption);
@@ -20,7 +23,7 @@ const ChangeGroupModal = ({show,onClose,checkedUsers,orgCategoryList,setCheckedU
     // mutation call
 
 const {
-    isPending,
+    isPending: isSubmitting,
     isError,
     error,
     mutate: addOrgCategory,
@@ -85,15 +88,23 @@ const {
     addOrgCategory(getCheckedUsers)
   }
     useEffect(() => {
-   
-        if (orgCategoryList?.length > 0) {
-          const convertingIntoFormat = orgCategoryList?.map((item) => ({
-            value: item?.organizationCategoryID,
-            label: item?.categoryName,
-          }));
-          setUpdatedOrgCategoryList(convertingIntoFormat);
+      const fetchOrgCategoryList = async () => {
+        setIsPending(true);
+        const orgCategoryData = await organizationCategoryList();
+        setOrgCategoryList(orgCategoryData?.data?.data);
+        if (orgCategoryData?.statusCode === 200) {
+          if (orgCategoryData?.data?.data.length > 0) {
+            const convertingIntoFormat = orgCategoryData.data.data.map((item) => ({
+              value: item?.organizationCategoryID,
+              label: item?.categoryName,
+            }));
+            setUpdatedOrgCategoryList(convertingIntoFormat);
+          }
         }
-      }, [orgCategoryList]);
+        setIsPending(false);
+      }
+      fetchOrgCategoryList();
+      }, []);
   return (
     <Modal show={show} onHide={onClose} centered  size="lg">
     <Modal.Header closeButton>
@@ -105,7 +116,8 @@ const {
                     Organization Category
                   </Form.Label>
                   <Col md={8} xs={12}>
-                  <Select
+                  {(isPending) && <Spinner style={{marginLeft:"8px"}} animation="border"  size="sm" role="status" aria-hidden="true" />}
+                  {!isPending && <Select
                     options={updatedOrgCategoryList}
                     onChange={handleOrgCategorySelect}
                     placeholder="Select Organization Category"
@@ -118,7 +130,7 @@ const {
                         zIndex: 9999, // Increase the z-index value as needed
                       }),
                     }}
-                  />
+                  />}
                   </Col>
                 </Row>
     </Modal.Body>

@@ -12,7 +12,7 @@ import { commonQuery,exportAllDomains,exportAllUsers } from "@/app/api/user";
 import CommonModal from './CommonModal';
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from 'react-responsive';
-const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplayed,totalCount }) => {
+const DataList = ({ fetchData, pageType }) => {
     const isMobile = useMediaQuery({
         query: '(max-width: 950px)'
     });
@@ -45,6 +45,13 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
         status:"",
         name:""
     });
+
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount,setTotalCount] = useState(null)
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize,setPageSize] = useState(0)
+    const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
+
     const getAddDomainDownloadUrl = () => {
         switch (pageType) {
             case 'exception':
@@ -60,6 +67,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
     const handleDisableEnter = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
+          fetchOptions();    // Once the user presses Enter, the empty tables become filled
         }
       };
       const handleUpdateStatus = (status, id) => {
@@ -71,8 +79,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
       const handleDownloadUserFile = async () => {
         setExportLoading(true);
         try {
-          const response = await exportAllDomains(getAddDomainDownloadUrl());
-         
+          const response = await exportAllDomains(getAddDomainDownloadUrl());         
           toast.success("Domain file downloaded", {
             position: "top-right",
             autoClose: 5000,
@@ -103,9 +110,11 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
         try {
             const responseData = await fetchData(pageNumber);
             if(responseData?.statusCode ===200){
-                setTotalPages(responseData?.data?.totalPages);
-                setData(responseData?.data?.data);
-                setLoading(false)
+              setPageSize(responseData?.data?.pageSize)
+              setTotalCount(responseData?.data?.totalCount)
+              setTotalPages(responseData?.data?.totalPages);
+              setData(responseData?.data?.data);
+              setLoading(false)
             }else{
                 toast.error('Oops something went wrong!', {
                     position: "top-right",
@@ -115,8 +124,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                    theme: "colored",
-                   
+                    theme: "colored",                   
                     });
                 setLoading(false)
             }
@@ -131,8 +139,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "colored",
-               
+                theme: "colored",               
                 });
             setData([]);
             setLoading(false)
@@ -143,11 +150,9 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
         isPending,
         isError,
         error,
-        mutate: updateStatus,
-      
+        mutate: updateStatus,      
       } = useMutation({
-        mutationFn: async (data) => {
-          
+        mutationFn: async (data) => {          
            return await commonQuery("PUT", `/api/${getStatusUrl()}/StatusChange?status=${data?.status}`, data?.data);
         },
         onSuccess(data, variables, context) {
@@ -160,8 +165,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                    theme: "colored",
-                   
+                    theme: "colored",                   
                     });
 
                     fetchListData();
@@ -171,7 +175,6 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                     status:"",
                     name:""
                 })
-
             }else{
                 toast.error('Oops something went wrong!', {
                     position: "top-right",
@@ -181,8 +184,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                    theme: "colored",
-                   
+                    theme: "colored",                   
                     });
             }
             // fetchUsers()
@@ -197,58 +199,48 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "colored",
-           
+            theme: "colored",           
             });
         },
       });
 
-    useEffect(() => {
-    
+    useEffect(() => {    
         fetchListData();
     }, [fetchData, pageNumber]);
-    useEffect(() => {
-        const fetchOptions = async () => {
-          if (searchQuery.trim() === "") {
-            fetchListData();
-          }
-          try {
-            const response = await fetchData(null, searchQuery);
     
-            if (response?.statusCode === 200) {
-                setData(response.data?.data);
-    
-              // setLoading(false)
-            } 
-            else if(response?.statusCode === 204){
-                toast.warning('No domain found!', {
-                  position: "top-right",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored",
-                 
-                  });
-              }
-            else {
-                toast.error('Oops something went wrong!', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored",
-                   
-                    });
+// fetchOptions fetching DATA on the basis of searchQuery
+    const fetchOptions = async () => {
+      if (searchQuery.trim() === "") {
+        fetchListData();            
+      }
+      try {
+        const response = await fetchData(null, searchQuery);
+        if (response?.statusCode === 200) {
+            setData(response.data?.data);
+            setTotalPages(response?.data?.totalPages);
+            setTotalCount(response?.data?.totalCount)
+            setPageSize(response?.data?.pageSize)
+          // setLoading(false)
+        } 
+        else if(response?.statusCode === 204){
+          const toastId = "no-found";
+          setData([]);
+          setTotalPages(1);
+          if (!toast.isActive(toastId)){  
+            toast.warning('No results found!!', {
+              position: "top-right",
+              toastId,
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",             
+              });          
             }
-    
-            // setOptions(response.data); // Assuming the API returns an array of options
-          } catch (error) {
+          }
+        else {
             toast.error('Oops something went wrong!', {
                 position: "top-right",
                 autoClose: 5000,
@@ -257,19 +249,32 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: "colored",
-               
+                theme: "colored",               
                 });
-            // Handle error appropriately
-          }
-        };
-    
-        // Debounce the API call to avoid making a call for every keystroke
-        const delayDebounce = setTimeout(() => {
+        }
+
+        // setOptions(response.data); // Assuming the API returns an array of options
+      } catch (error) {
+        console.log('error',error);
+        toast.error('Oops something went wrong!', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",           
+            });
+        // Handle error appropriately
+      }
+    };
+
+    useEffect(() => {    
+      // length of the searchQuery is greater than 2 characters,then API called
+      if (searchQuery.length > 2) {
           fetchOptions();
-        }, 300);
-    
-        return () => clearTimeout(delayDebounce);
+        }        
       }, [searchQuery]);
 
       const getAddDomainUrl = () => {
@@ -287,8 +292,7 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
         }
     };
 
-    const handleShowActionPop = (status,id, domainName) => {
-     
+    const handleShowActionPop = (status,id, domainName) => {     
         setShowActionPop(true);
         setCurrentActionDetails({
             id,
@@ -315,7 +319,6 @@ const DataList = ({ fetchData, pageNumber, setTotalPages, pageType,itemsDisplaye
     ));
 
     CustomToggle.displayName = 'CustomToggle';
-
     const ActionMenu = ({ itemId, pageType,domainName,categoryName }) => {
         const getUpdateUrl = () => {
             switch (pageType) {
@@ -465,7 +468,7 @@ theme="colored"
                 <Spinner animation="border" role="status" variant="primary"  >
       <span className="visually-hidden">Loading...</span>
     </Spinner>
-            </div>:(<>{data?.length>0&&(    <Table responsive="xl" hover striped className="text-nowrap">
+            </div>:(<>{/*data?.length>0&&(*/}<Table responsive="xl" hover striped className="text-nowrap">
                 <thead className="table-light">
                     <tr>
                         {/* <th>Sr/No.</th>
@@ -515,7 +518,7 @@ theme="colored"
                     </tr>
                   ))}
                 </tbody> 
-            </Table>)}</>)}
+            </Table>{/*)*/}</>)}
             
           
         

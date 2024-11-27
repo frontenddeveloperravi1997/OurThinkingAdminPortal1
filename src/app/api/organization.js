@@ -92,8 +92,7 @@ const organizationById = async (Id) => {
 
 const deleteOrganizationById = async (Id) => {
   const response = await axios.delete(`${baseUrl}/api/Organization/${Id}`, {
-    headers: { 'Api_Key': apiKey },
-  
+    headers: { 'Api_Key': apiKey },  
   });
   return response.data;
 };

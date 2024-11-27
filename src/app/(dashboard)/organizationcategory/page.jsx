@@ -44,7 +44,7 @@ const OrganizationCategory = () => {
             }
         };
 
-        fetchOrganizationCategoryData();
+        //fetchOrganizationCategoryData();
     }, [pageNumber]);
 
     return (
@@ -78,11 +78,7 @@ const OrganizationCategory = () => {
                                 <Col xl={12} lg={12} md={12} xs={12}>
                                     <DataList
                                         fetchData={fetchOrganizationCategoryList}
-                                        pageNumber={pageNumber}
-                                        setTotalPages={setTotalPages}
                                         pageType="organizationcategory"
-                                        itemsDisplayed={itemsDisplayed}
-                                        totalCount={totalCount}
                                     />
                                 </Col>
                             </Row>

@@ -40,7 +40,7 @@ const BlackListLanding = () => {
             }
         };
 
-        fetchTotalPages();
+        //fetchTotalPages();
     }, []);
 
     return (
@@ -74,12 +74,8 @@ const BlackListLanding = () => {
               <Row className="my-6">
                     <Col xl={12} lg={12} md={12} xs={12}>
                         <DataList
-                            fetchData={fetchBlacklist}
-                            pageNumber={pageNumber}
-                            setTotalPages={setTotalPages}
+                            fetchData={fetchBlacklist}                           
                             pageType="blacklist"
-                            itemsDisplayed={itemsDisplayed}
-                            totalCount={totalCount}
                         />
                     </Col>
                 </Row>

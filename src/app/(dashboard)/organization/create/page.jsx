@@ -112,7 +112,7 @@ const CreateOrganization = () => {
         theme="colored"
       />
             <PageHeading heading="General" />
-         <OrganizationForm
+         <OrganizationForm 
          org={{}}
           method="addOrg"
           regionsList={regionsList}

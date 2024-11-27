@@ -43,7 +43,7 @@ const ExceptionListLanding = () => {
             }
         };
 
-        fetchTotalPages();
+        //fetchTotalPages();
     }, []);
     return (
         <Fragment>
@@ -76,11 +76,7 @@ const ExceptionListLanding = () => {
                     <Col xl={12} lg={12} md={12} xs={12}>
                         <DataList
                             fetchData={fetchExceptionList}
-                            pageNumber={pageNumber}
-                            setTotalPages={setTotalPages}
                             pageType="exception"
-                            itemsDisplayed={itemsDisplayed}
-                            totalCount={totalCount}
                         />
                     </Col>
                 </Row>

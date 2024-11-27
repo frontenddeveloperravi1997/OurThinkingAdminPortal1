@@ -43,7 +43,7 @@ const WhiteListLanding = () => {
             }
         };
 
-        fetchTotalPages();
+        //fetchTotalPages();
     }, []);
 
     return (
@@ -78,11 +78,7 @@ const WhiteListLanding = () => {
                     <Col xl={12} lg={12} md={12} xs={12}>
                         <DataList
                             fetchData={fetchWhitelist}
-                            pageNumber={pageNumber}
-                            setTotalPages={setTotalPages}
                             pageType="whitelist"
-                            itemsDisplayed={itemsDisplayed}
-                            totalCount={totalCount}
                         />
                     </Col>
                 </Row>

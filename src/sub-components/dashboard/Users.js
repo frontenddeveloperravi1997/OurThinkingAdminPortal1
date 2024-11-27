@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState,useRef } from "react";
 import Link from "next/link";
 import { Card, Table, Dropdown, Form, Button } from "react-bootstrap";
@@ -13,8 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 import ChangeDomainModal from "./ChangeDomainModal";
 import ChangeBulkTaggingModal from "./ChangeBulkTaggingModal";
 import ChangeMultipleOrganizationModal from "./ChangeMultipleOrganizationModal";
-
-const Users = ({ pageNumber, setTotalPages,itemsDisplayed,totalCount }) => {
+const Users = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 768px)'
 });
@@ -31,6 +31,8 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [showBulkTaggingPopup,setBulkTaggingPop] = useState(false);
   const [showMultipleOrganizationPopup,setMultipleOrganizationPop] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     userId: "",
     status: "",
@@ -39,17 +41,44 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [checkedUsers, setCheckedUsers] = useState({});
   const [file, setFile] = useState(null);
   const [fileUploadLoading,setFileUploadLoading] = useState(false);
-  const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
-    setCheckedUsers((prevCheckedUsers) => ({
-      ...prevCheckedUsers,
-      [userID]: {
-        userEmail,
-        emailVerify,
-        status,
-        isChecked: !prevCheckedUsers[userID]?.isChecked,
-      },
-    }));
-  };
+  const [pageSize,setPageSize] = useState(0)
+  const [pageNumber, setPageNumber] = useState(1);
+  const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
+  const [hasFetched, setHasFetched] = useState(false);
+  // const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
+  //   setCheckedUsers((prevCheckedUsers) => ({
+  //     ...prevCheckedUsers,
+  //     [userID]: {
+  //       userEmail,
+  //       emailVerify,
+  //       status,
+  //       isChecked: !prevCheckedUsers[userID]?.isChecked,
+  //     },
+  //   }));
+  // };
+
+  const handleCheckboxChange = (userID, userEmail, emailVerify, status) => {
+    setCheckedUsers((prevCheckedUsers) => {
+        const isChecked = prevCheckedUsers[userID]?.isChecked;
+
+        if (isChecked) {
+            // Uncheck the user (remove from the checkedUsers)
+            const { [userID]: _, ...rest } = prevCheckedUsers; // Remove userID from the state
+            return rest;
+        } else {
+            // Check the user (add/update in the checkedUsers)
+            return {
+                ...prevCheckedUsers,
+                [userID]: {
+                    userEmail,
+                    emailVerify,
+                    status,
+                    isChecked: true,
+                },
+            };
+        }
+    });
+};
   const isCheckedUsersNotEmpty = Object.keys(checkedUsers).some(
     (key) => checkedUsers[key].isChecked
   );
@@ -78,6 +107,13 @@ const closeChangeBulkTagging = () =>{
 
 const handleChangeMultipleOrganization = () => {
   setMultipleOrganizationPop(true);
+};
+
+const handleKeyDown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();  
+    fetchOptions();
+  }
 };
 
 
@@ -241,8 +277,7 @@ const handleChangeMultipleOrganization = () => {
     mutationFn: async (data) => {
       return await commonQuery("POST", `/api/User/InviteUser`, data);
     },
-    onSuccess(data, variables, context) {
-  
+    onSuccess(data, variables, context) {  
       if (data?.data?.statusCode === 200) {
         toast.success("Invite Sent successfully", {
           position: "top-right",
@@ -286,14 +321,12 @@ const handleChangeMultipleOrganization = () => {
 
   const {
     isPending: isPendingReset,
-
     mutate: resetPassword,
   } = useMutation({
     mutationFn: async (data) => {
       return await commonQuery("POST", `/api/User/resetPassword`, data);
     },
-    onSuccess(data, variables, context) {
- 
+    onSuccess(data, variables, context) { 
       if (data?.data?.statusCode === 200) {
         toast.success("Sent successfully", {
           position: "top-right",
@@ -336,14 +369,12 @@ const handleChangeMultipleOrganization = () => {
   // delete multiple users
   const {
     isPending: isPendingDelete,
-
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
       return await commonQuery("Delete", `/api/User/DeleteMultiUser`, data);
     },
-    onSuccess(data, variables, context) {
- 
+    onSuccess(data, variables, context) { 
       if (data?.data?.statusCode === 200) {
         toast.success("Successfully Deleted", {
           position: "top-right",
@@ -390,27 +421,34 @@ const handleChangeMultipleOrganization = () => {
       status,
     });
   };
+  const handleInvite = (email) => {
+    inviteUser([email]);
+  };
 
-  // const handleInvite = (email) => {
-  //   inviteUser([email]);
-  // };
   const handleMultipleReset = () =>{
     const getCheckedUserEmails = Object.keys(checkedUsers)
     .filter((key) => checkedUsers[key].isChecked)
     .map((key) => checkedUsers[key].userEmail);
     resetPassword(getCheckedUserEmails);
-
   }
-  const handleMultipleSendInvite = () =>{
+  // const handleMultipleSendInvite = () =>{
+  //   const verifiedAndCheckedEmails = Object.keys(checkedUsers)
+  //   .filter(key => checkedUsers[key].isChecked && checkedUsers[key].emailVerify === "Verified")
+  //   .map(key => checkedUsers[key].userEmail);
+  //   inviteUser(verifiedAndCheckedEmails);
+  // }
+
+  const handleMultipleSendInvite = () => {
     const verifiedAndCheckedEmails = Object.keys(checkedUsers)
-    .filter(key => checkedUsers[key].isChecked && checkedUsers[key].emailVerify === "Verified")
-    .map(key => checkedUsers[key].userEmail);
-     resetPassword(verifiedAndCheckedEmails);
+    .filter(key => checkedUsers[key].isChecked && (checkedUsers[key].emailVerify !== "Verified"))
+    .map(key => checkedUsers[key].userEmail);    
+    inviteUser(verifiedAndCheckedEmails); 
+  };
 
-  }
   const handleResetPassword = (email) => {
     resetPassword([email]);
   };
+
   const fetchUsers = async () => {
     setLoading(true);
     try {
@@ -418,7 +456,10 @@ const handleChangeMultipleOrganization = () => {
       if (responseData?.statusCode === 200) {
         setTotalPages(responseData?.data?.totalPages);
         setUsers(responseData?.data?.data);
+        setPageSize(responseData?.data?.pageSize)
+        setTotalCount(responseData?.data?.totalCount)
         setCheckedUsers({})
+        setHasFetched(true);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -448,23 +489,27 @@ const handleChangeMultipleOrganization = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchUsers();
-  }, [pageNumber]);
-  useEffect(() => {
-    const fetchOptions = async () => {
-      if (searchQuery.trim() === "") {
-        fetchUsers();
-      }
-      try {
-        const response = await getUsersList(null, searchQuery);
 
-        if (response?.statusCode === 200) {
-          setUsers(response.data?.data);
-
-          // setLoading(false)
-        } else if(response?.statusCode === 204){
-          toast.warning('No user found!', {
+  // fetchOptions fetching users on the basis of searchQuery
+  const fetchOptions = async () => 
+  {
+    if (searchQuery.trim() === "") {
+      fetchUsers();
+    }
+    try {
+      const response = await getUsersList(null, searchQuery);
+      if (response?.statusCode === 200) {
+        setUsers(response.data?.data);
+        setTotalPages(response?.data?.totalPages);
+        setTotalCount(response?.data?.totalCount)
+        // setLoading(false)
+      } else if(response?.statusCode === 204){
+        const toastId = "no-user-found";
+        setUsers([]);
+        setTotalPages(1); 
+        if (!toast.isActive(toastId)){
+          toast.warning('No user found!!', {
+            toastId,
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -472,28 +517,11 @@ const handleChangeMultipleOrganization = () => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "colored",
-           
+            theme: "colored",         
             });
-        }
-        
-        else {
-          toast.error('Oops something went wrong!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-           
-            });
-        }
-
-    
-        // setOptions(response.data); // Assuming the API returns an array of options
-      } catch (error) {
+        }         
+      }      
+      else {
         toast.error('Oops something went wrong!', {
           position: "top-right",
           autoClose: 5000,
@@ -502,19 +530,39 @@ const handleChangeMultipleOrganization = () => {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "colored",
-         
+          theme: "colored",         
           });
-        // Handle error appropriately
       }
-    };
 
-    // Debounce the API call to avoid making a call for every keystroke
-    const delayDebounce = setTimeout(() => {
+  
+      // setOptions(response.data); // Assuming the API returns an array of options
+    } catch (error) {
+      toast.error('Oops something went wrong!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+       
+        });
+      // Handle error appropriately
+    }
+  };
+  
+  useEffect(() => {
+    if(!hasFetched){
+      // console.log("pageNumber--->",pageNumber)
+      fetchUsers();
+    } 
+  }, [pageNumber]);
+  
+  useEffect(() => {
+    if (searchQuery.length > 2) {
       fetchOptions();
-    }, 300);
-
-    return () => clearTimeout(delayDebounce);
+    }
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, email) => {
@@ -529,8 +577,7 @@ const handleChangeMultipleOrganization = () => {
     setShowActionPop(false);
   };
 
-  const handleMultipleDelete = () =>{
-  
+  const handleMultipleDelete = () =>{  
     const getCheckedUsers = Object.keys(checkedUsers)
     .filter(key => checkedUsers[key].isChecked)
     .map(key => Number(key));
@@ -560,7 +607,7 @@ const handleChangeMultipleOrganization = () => {
         e.preventDefault();
         onClick(e);
       }}
-      className="text-muted text-primary-hover"
+      className="text-muted text-primary-hover custom-link"
     >
       {children}
     </Link>
@@ -599,72 +646,44 @@ const handleChangeMultipleOrganization = () => {
   
   const ActionMoreMenu = ({ userID, status, userEmail,emailVerify }) => (
      
-    <Button
-    onClick={() =>{}}
- className="more-btn"
-variant="outline-dark"
-
-  >
-    <Dropdown>
-      <Dropdown.Toggle as={CustomToggleMore}>
-       More +
-      </Dropdown.Toggle>
-      <Dropdown.Menu align={"end"}>
-     
-      
-        <Dropdown.Item
-          eventKey="1"
-      // disabled={Boolean(emailVerify === "Verified")}
-          onClick={handleMultipleSendInvite}
-        >
-          {isPendingReset ? "Sending Invite.." : "Send Invitation"}
-        </Dropdown.Item>
-        <Dropdown.Item     onClick={handleMultipleReset} eventKey="2">
+<Button onClick={() => {}} className="more-btn custom-more-cta" variant="outline-dark">
+  <Dropdown>
+    <Dropdown.Toggle as={CustomToggleMore}>
+      {/* This will replace the content inside the button with CustomToggleMore */}
+      More +
+    </Dropdown.Toggle>
+    <Dropdown.Menu align={"end"}>
+      <Dropdown.Item
+        eventKey="1"
+        onClick={handleMultipleSendInvite}
+      >
+          {isPendingInvite ? "Sending Invite.." : "Send Invitation"}
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleMultipleReset} eventKey="2">
         {isPendingReset ? "Sending..." : "Reset Password"}
-          
-          </Dropdown.Item>
-       
-          <Dropdown.Item  onClick={handleChangeMultipleOrganization}
-            eventKey="2"
-          >
-            Add to group
-            </Dropdown.Item>
-      
-          <Dropdown.Item
-            onClick={handleChangeMultipleDomain}
-            eventKey="3"
-          >
-           Change User Roles
-          </Dropdown.Item>
-
-         
-   
-      
-          <Dropdown.Item
-         onClick={handleMultipleDelete}
-            eventKey="4"
-          >
-            Delete
-          </Dropdown.Item>
-
-          <Dropdown.Item
-            onClick={handleChangeBulkTagging}
-            eventKey="5"
-          >
-           User Bulk Tagging
-          </Dropdown.Item>
-        
-    
-      </Dropdown.Menu>
-    </Dropdown>
-    </Button>
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeMultipleOrganization} eventKey="3">
+        Add to group
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeMultipleDomain} eventKey="4">
+        Change User Roles
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleMultipleDelete} eventKey="5">
+        Delete
+      </Dropdown.Item>
+      <Dropdown.Item onClick={handleChangeBulkTagging} eventKey="6">
+        User Bulk Tagging
+      </Dropdown.Item>
+    </Dropdown.Menu>
+  </Dropdown>
+</Button>
   );
 
   return (
     <>
-    <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />
-    <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />
-    <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />
+    {showDomainPopup && <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />}
+    {showBulkTaggingPopup && <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />}
+    {showMultipleOrganizationPopup && <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />}
       <CommonModal
         show={showActionPop}
         onClose={handleHideActionPop}
@@ -760,10 +779,7 @@ variant="outline-dark"
             </div>
             {isCheckedUsersNotEmpty &&(
   <div className={UploadWrap}>
-  {/* <Button onClick={()=>{}}     variant="outline-dark">
-    More +
-
-  </Button> */}
+ 
   <ActionMoreMenu  />
 
 </div>
@@ -787,6 +803,7 @@ variant="outline-dark"
                   placeholder="Search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
               </Form>
             </div>
