@@ -35,9 +35,6 @@ const MultiCheckTopicSelection = ({
   //     .join("|");
   // };
 
-  //console.log('initialSelection-->',initialSelection);
-
-
   const generateSelectionString = (checkedRegions) => {
     return Object.keys(checkedRegions)
       .map((region) => {
@@ -60,7 +57,6 @@ const MultiCheckTopicSelection = ({
   const [selectAll, setSelectAll] = useState(false);
   const [isSelectAllClicked, setIsSelectAllClicked] = useState(false);
 
-    
   const parseInitialSelection = (selectionString) => {
     const selection = {};
     const regions = selectionString.split("|");
@@ -69,17 +65,12 @@ const MultiCheckTopicSelection = ({
       if (!selection[region]) {
         selection[region] = {};
       }
-      if (countries.length === 0) {
-        selection[region].checked = true;
-      } else {
-        countries.forEach((country) => {
-          selection[region][country] = true;
-        });
-      }
+      countries.forEach((country) => {
+        selection[region][country] = true;
+      });
     });
     return selection;
   };
-  
 
   useEffect(() => {
     if (initialSelection) {
@@ -88,9 +79,6 @@ const MultiCheckTopicSelection = ({
       // setSelectAll(areAllCountriesChecked(initialCheckedRegions));
     }
   }, [initialSelection]);
-
-  //console.log('topicList-->', topicList);
-  //console.log('checkedRegions-->', checkedRegions);
 
   // const areAllCountriesChecked = (newState = checkedRegions) => {
   //   return Object.values(newState).every((region) =>
@@ -205,13 +193,9 @@ const MultiCheckTopicSelection = ({
       </div>
       <div className="d-flex justify-content-between flex-column accordionWrap">
         {Object.keys(topicList)?.map((region, index) => {
-          const isBlankBody = !topicList[region] || topicList[region].length === 0;
           return (
             <Accordion key={index}>
-              <Accordion.Item 
-                eventKey={String(index)}
-                className={isBlankBody ? "blank-body-found" : ""}
-              >
+              <Accordion.Item eventKey={String(index)}>
               <Accordion.Header
                   className={`d-flex flex-row p-0 ${
                     isAnyCountrySelected(region) &&

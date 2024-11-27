@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, Table, Dropdown, Form, Button } from "react-bootstrap";
 import { MoreVertical } from "react-feather";
-//import { organizationList } from "@/app/api/organization";
+import { organizationList } from "@/app/api/organization";
 import { formatDate } from "@/utils/formateDate";
 import { toast, ToastContainer } from "react-toastify";
 import Spinner from "react-bootstrap/Spinner";
@@ -10,10 +10,15 @@ import { commonQuery, exportAllOrgReport } from "@/app/api/user";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import CommonModal from "./CommonModal";
 import { useRouter } from "next/navigation";
-import { organizationList,organizationCategoryList } from "@/app/api/organization";
 import { useMediaQuery } from "react-responsive";
 import ChangeGroupModal from "./ChangeGroupModal";
-const Organizations = () => {
+const Organizations = ({
+  pageNumber,
+  setTotalPages,
+  itemsDisplayed,
+  totalCount,
+  orgCategoryList,
+}) => {
   const isMobile = useMediaQuery({
     query: "(max-width: 768px)",
   });
@@ -30,14 +35,6 @@ const Organizations = () => {
   const [exportLoading, setExportLoading] = useState(false);
   const [checkedUsers, setCheckedUsers] = useState({});
   const [showDomainPopup, setDomainPop] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount,setTotalCount] = useState(null);
-  const [pageSize,setPageSize] = useState(0);
-  const [pageNumber, setPageNumber] = useState(1);
-  const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
-  const [orgCategoryList, setOrgCategoryList] = useState([]);
-  const [initialData, setInitialData] = useState([]);
   const [currentActionDetails, setCurrentActionDetails] = useState({
     orgId: "",
     status: "",
@@ -46,7 +43,6 @@ const Organizations = () => {
   const handleDisableEnter = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      fetchOptions();    // Once the user presses Enter, the empty tables become filled
     }
   };
   const handleChangeMultipleDomain = () => {
@@ -72,6 +68,7 @@ const Organizations = () => {
     setExportLoading(true);
     try {
       const response = await exportAllOrgReport();
+
       toast.success("Organization file downloaded successfully!!", {
         position: "top-right",
         autoClose: 5000,
@@ -98,35 +95,11 @@ const Organizations = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchTotalPages = async () => {
-      setLoading(true);
-      try {
-         const responseData = await organizationList(pageNumber);
-         const orgCategoryData = await organizationCategoryList();
-         setOrgCategoryList(orgCategoryData?.data?.data);
-          if (responseData?.statusCode === 200) {
-          setTotalPages(responseData?.data?.totalPages);
-          setPageSize(responseData?.data?.pageSize)
-          setLoading(false);
-          setInitialData(
-            responseData?.data?.data === null ? [] : responseData?.data?.data
-          );
-          setTotalCount(responseData?.data?.totalCount)
-        } else {
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching total pages:", error);
-        setLoading(false);
-      }
-    };
-    fetchTotalPages();
-  }, []);
-
   //delete org
+
   const {
     isPending: isPendingDelete,
+
     mutate: deleteMultiple,
   } = useMutation({
     mutationFn: async (data) => {
@@ -137,7 +110,7 @@ const Organizations = () => {
       );
     },
     onSuccess(data, variables, context) {
-      // console.log("Mutation Success Data:", data);
+      console.log("Mutation Success Data:", data);
       if (data?.status === 200) {        
         toast.success("Organization successfully Deleted", {
           position: "top-right",
@@ -184,11 +157,8 @@ const Organizations = () => {
       const responseData = await organizationList(pageNumber);
       if (responseData?.statusCode === 200) {
         setOrganizations(responseData.data?.data);
-        setPageSize(responseData?.data?.pageSize);
         setCheckedUsers({});
         setTotalPages(responseData.data?.totalPages);
-        setTotalCount(responseData.data?.totalCount);
-        setHasFetched(true);
         setLoading(false);
       } else {
         toast.error("Oops something went wrong!", {
@@ -284,25 +254,32 @@ const Organizations = () => {
   useEffect(() => {
     fetchOrganizations();
   }, [pageNumber]);
-// fetchOptions fetching Organizations on the basis of searchQuery
-  const fetchOptions = async () => {
-    if (searchQuery.trim() === "") {
-      fetchOrganizations();
-    }
-    try {
-      const response = await organizationList(null, searchQuery);
-      if (response?.statusCode === 200) {
-        setOrganizations(response.data?.data);
-        setTotalPages(response?.data?.totalPages);
-        setTotalCount(response?.data?.totalCount);
-        // setLoading(false)
-      } else if (response?.statusCode === 204) {
-        const toastId = "no-organization-found";
-        setOrganizations([]);
-        setTotalPages(1);
-        if (!toast.isActive(toastId)){        
-          toast.warning("No organization found!!", {
-            toastId,
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      if (searchQuery.trim() === "") {
+        fetchOrganizations();
+      }
+      try {
+        const response = await organizationList(null, searchQuery);
+
+        if (response?.statusCode === 200) {
+          setOrganizations(response.data?.data);
+
+          // setLoading(false)
+        } else if (response?.statusCode === 204) {
+          toast.warning("No organization found!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error("Oops something went wrong!", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -313,7 +290,9 @@ const Organizations = () => {
             theme: "colored",
           });
         }
-      } else {
+
+        // setOptions(response.data); // Assuming the API returns an array of options
+      } catch (error) {
         toast.error("Oops something went wrong!", {
           position: "top-right",
           autoClose: 5000,
@@ -324,33 +303,16 @@ const Organizations = () => {
           progress: undefined,
           theme: "colored",
         });
+        // Handle error appropriately
       }
-      // setOptions(response.data); // Assuming the API returns an array of options
-    } catch (error) {
-      toast.error("Oops something went wrong!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      // Handle error appropriately
-    }
-  };
+    };
 
-  useEffect(() => {
-    if(!hasFetched){
-      // console.log("pageNumber--->",pageNumber);     
-    } 
-  }, [pageNumber]);
-
-  useEffect(() => {
-    if (searchQuery.length > 2) {
+    // Debounce the API call to avoid making a call for every keystroke
+    const delayDebounce = setTimeout(() => {
       fetchOptions();
-    }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
   }, [searchQuery]);
 
   const handleShowActionPop = (status, id, name) => {
@@ -402,7 +364,7 @@ const Organizations = () => {
         e.preventDefault();
         onClick(e);
       }}
-      className="text-muted text-primary-hover custom-link"
+      className="text-muted text-primary-hover"
     >
       {children}
     </Link>
@@ -431,7 +393,7 @@ const Organizations = () => {
     </Dropdown>
   );
   const ActionMoreMenu = ({ userID, status, userEmail, emailVerify }) => (
-    <Button onClick={() => {}} className="more-btn custom-more-cta" variant="outline-dark">
+    <Button onClick={() => {}} className="more-btn" variant="outline-dark">
       <Dropdown>
         <Dropdown.Toggle as={CustomToggleMore}>More +</Dropdown.Toggle>
         <Dropdown.Menu align={"end"}>

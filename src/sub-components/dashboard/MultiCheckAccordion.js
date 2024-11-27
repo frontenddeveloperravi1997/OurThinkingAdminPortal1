@@ -2,6 +2,22 @@ import { useState, useEffect } from "react";
 import { Accordion, Form } from "react-bootstrap";
 
 const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
+  // const generateSelectionString = (checkedRegions) => {
+  //     return Object.keys(checkedRegions)
+    
+  //     .map((region) => {
+  //       const selectedCountries = Object.keys(checkedRegions[region])
+  //         .filter((country) => checkedRegions[region][country])
+  //         .join("#");
+          
+  //       return selectedCountries ? `${region}#${selectedCountries}` : "";
+  //     })
+  //     .filter(Boolean)
+  //     .join("|");
+  // };
+
+
+
   const generateSelectionString = (checkedRegions) => {
   return Object.keys(checkedRegions)
     .flatMap((region) => {
@@ -12,6 +28,11 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
     .filter(Boolean)
     .join("|");
 };
+
+
+
+  
+  
 
   const [checkedRegions, setCheckedRegions] = useState({});
   const [selectAll, setSelectAll] = useState(false);
@@ -143,13 +164,9 @@ const MultiCheckAccordion = ({ regionsList, initialSelection, setValue }) => {
       </div>
       <div className="d-flex justify-content-between flex-column accordionWrap">
         {Object.keys(regionsList)?.map((region, index) => {
-          const isBlankBody = !regionsList[region] || regionsList[region].length === 0;
           return (
             <Accordion key={index}>
-              <Accordion.Item
-                eventKey={String(index)}
-                className={isBlankBody ? "blank-body-found" : ""}
-              >
+              <Accordion.Item eventKey={String(index)}>
                 <Accordion.Header
                   className={`d-flex flex-row p-0 ${
                     isAnyCountrySelected(region) &&

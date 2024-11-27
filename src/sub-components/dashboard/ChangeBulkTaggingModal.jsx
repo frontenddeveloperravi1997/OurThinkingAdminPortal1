@@ -19,29 +19,9 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
     };
 
     const handleAddClick = async () => {
-        setIsLoading(true);
+        setIsLoading(true); // Start the loader
 
-        //console.log("Entered Tags:", inputValue);
-    
-        const validFormat = /^([A-Za-z\s]+#[A-Za-z\s-]+|[A-Za-z\s]+)(\|([A-Za-z\s]+#[A-Za-z\s-]+|[A-Za-z\s]+))*\|?$/;
-
-    
-        if (!validFormat.test(inputValue)) {
-            toast.error("The input value is invalid.", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            });
-            setIsLoading(false);
-            return;
-        }
-    
-        if (!inputValue) {
+        if(!inputValue){
             toast.error("You must enter a tag value!", {
                 position: "top-right",
                 autoClose: 5000,
@@ -51,18 +31,17 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
                 draggable: true,
                 progress: undefined,
                 theme: "colored",
-            });
-            setIsLoading(false);
+              });
+              setIsLoading(false);
             return;
         }
-    
         try {
             const userIds = Object.keys(checkedUsers);
-            console.log({ userIds, topics: inputValue });
-    
+            //console.log({ userIds, topics: inputValue });
+
             const response = await bulkTagging({ userIds, topics: inputValue });
-            console.log(response);
-    
+            //console.log(response); // Log response for debugging
+
             if (response?.statusCode === 200) {
                 toast.success("Tags added successfully!", {
                     position: "top-right",
@@ -94,7 +73,6 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
             setIsLoading(false); // Stop the loader
         }
     };
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -125,23 +103,15 @@ const ChangeBulkTaggingModal = ({ show, onClose, checkedUsers, setValue }) => {
             <Modal.Body>
                 <Row className="mb-3">
                     <Form.Label className="col-md-3" htmlFor="tags">
-                        Topics                        
+                        Topics
                     </Form.Label>
                     <Col md={8} xs={12}>
-                    
                         <Form.Control
                             type="text"
                             placeholder="Enter tags"
                             value={inputValue}
                             onChange={handleInputChange}
                         />
-                    <div className="instructions-for-user">
-                    <h5>Note: Please enter the values in below format</h5>
-                    <div>
-                    <h6>Parent#Child|Parent#Child|</h6>
-                    </div>
-                    </div>
-                    
                     </Col>
                 </Row>
             </Modal.Body>

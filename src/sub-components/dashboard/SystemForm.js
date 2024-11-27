@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation'
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {  toast,ToastContainer } from 'react-toastify';
 import CommonModal from './CommonModal';
+import { isWhiteListDomainExists } from '@/app/api/datalist';
 import { isBlackListDomainExists } from '@/app/api/datalist';
 import { isExceptionListDomainExists } from '@/app/api/datalist';
 
 const SystemForm = ({pageName,isEdit,domain={}}) => {
-// console.log('pageName-->',pageName);
 const router = useRouter()
 const [domainCreated,setDomainCreated] = useState(false)
    
@@ -107,26 +107,24 @@ const [domainCreated,setDomainCreated] = useState(false)
         //console.log('isEdit-->', isEdit);
     
         try {
-
-          if(pageName == 'ExceptionDomain'){
+            const domainExists = await isWhiteListDomainExists(data?.domainName);
+            const blackListDomainExists = await isBlackListDomainExists(data?.domainName);
             const exceptionListDomainExists = await isExceptionListDomainExists(data?.domainName);
-            if(exceptionListDomainExists) {
+    
+            if (domainExists) {
               toast.error('Domain name already exists!!')
               return
             }
-          }
-          else
-          {
-            const blackListDomainExists = await isBlackListDomainExists(data?.domainName);           
 
             if (blackListDomainExists) {
               toast.error('Domain name already exists!!')
               return
             }
-          }
-            
 
-            
+            if(exceptionListDomainExists) {
+              toast.error('Domain name already exists!!')
+              return
+            }
    
             if (isEdit === true) {
                 createNewDomain({

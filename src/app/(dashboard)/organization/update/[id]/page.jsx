@@ -17,7 +17,7 @@ import { toast, ToastContainer } from "react-toastify";
 
 const UpdateOrg = ({ params }) => {
   const { id: organizationId } = params;
-  const [organization, setOrganization] = useState(null); 
+  const [organization, setOrganization] = useState(null);
   const [frequencyList, setFrequencyList] = useState([]);
   const [regionsList, setRegionsList] = useState([]);
   const [topicList, setTopicList] = useState([]);
@@ -104,8 +104,10 @@ const UpdateOrg = ({ params }) => {
         
            setRegionsList(dropDownData?.RegionsAndCountry);
            setTopicList(dropDownData?.TopicsAndSubTopics);
-           setLanguageList(dropDownData?.Languages);        
-           setOrgKeyContactList(orgKeyContactData);
+           setLanguageList(dropDownData?.Languages);
+       
+         
+          setOrgKeyContactList(orgKeyContactData)
         }
         setIsLoading(false)
       } catch (error) {

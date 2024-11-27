@@ -192,6 +192,17 @@ const OrganizationForm = ({
   });
 
   const onSubmit = (data) => {
+    //   try {
+    //     const organizationtDomainExists = isOrganizationListDomainExists(data?.domainName);
+    //     console.log('organizationtDomainExists',organizationtDomainExists);
+    //     if(organizationtDomainExists) {
+    //       toast.error('Domain name already exists')
+    //       return
+    //     }
+    // } catch (error) {
+    //     console.error("Error checking domain existence:", error);
+    //     // Handle error scenario, e.g., show an error message to the user
+    // }
     const whitelistDomains = [
       {
         id: 0,
