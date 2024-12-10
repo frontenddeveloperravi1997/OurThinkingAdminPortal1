@@ -6,7 +6,6 @@ import React, { Fragment, useState,useEffect } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
 import DataList from '@/sub-components/dashboard/DataList';
 import { fetchExceptionList } from '@/app/api/datalist';
-import PaginationUtils from "@/utils/paginationUtils";
 import Spinner from "react-bootstrap/Spinner";
 const ExceptionListLanding = () => {
     const [totalPages, setTotalPages] = useState(1);
@@ -16,9 +15,7 @@ const ExceptionListLanding = () => {
     const [totalCount,setTotalCount] = useState(null)
     const [pageSize,setPageSize] = useState(0)
     const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
-    const handlePageChange = (page) => {
-        setPageNumber(page);
-    };
+    
     useEffect(() => {
         const fetchTotalPages = async () => {
             setLoading(true);
@@ -80,14 +77,6 @@ const ExceptionListLanding = () => {
                         />
                     </Col>
                 </Row>
-              {initialData?.length > 0 && (
-          
-          <PaginationUtils
-          currentPage={pageNumber}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-      />
-              )}
             </>
           )}
 </>

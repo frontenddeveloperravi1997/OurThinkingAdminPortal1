@@ -14,6 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 import ChangeDomainModal from "./ChangeDomainModal";
 import ChangeBulkTaggingModal from "./ChangeBulkTaggingModal";
 import ChangeMultipleOrganizationModal from "./ChangeMultipleOrganizationModal";
+import PaginationUtils from "@/utils/paginationUtils";
 const Users = () => {
   const isMobile = useMediaQuery({
     query: '(max-width: 768px)'
@@ -45,6 +46,13 @@ const UploadWrap = isMobile?"d-flex flex-column w-100 ":""
   const [pageNumber, setPageNumber] = useState(1);
   const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
   const [hasFetched, setHasFetched] = useState(false);
+  
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setPageNumber(page);
+    }
+  };
+
   // const handleCheckboxChange = (userID, userEmail,emailVerify,status) => {
   //   setCheckedUsers((prevCheckedUsers) => ({
   //     ...prevCheckedUsers,
@@ -453,6 +461,7 @@ const handleKeyDown = (e) => {
     setLoading(true);
     try {
       const responseData = await getUsersList(pageNumber);
+      console.log("Fetched Users:--", responseData);
       if (responseData?.statusCode === 200) {
         setTotalPages(responseData?.data?.totalPages);
         setUsers(responseData?.data?.data);
@@ -553,10 +562,7 @@ const handleKeyDown = (e) => {
   };
   
   useEffect(() => {
-    if(!hasFetched){
-      // console.log("pageNumber--->",pageNumber)
-      fetchUsers();
-    } 
+      fetchUsers();     
   }, [pageNumber]);
   
   useEffect(() => {
@@ -681,6 +687,9 @@ const handleKeyDown = (e) => {
 
   return (
     <>
+    <div className="my-6">
+
+    
     {showDomainPopup && <ChangeDomainModal show={showDomainPopup} onClose={closeChangeDomainPop} checkedUsers={checkedUsers} />}
     {showBulkTaggingPopup && <ChangeBulkTaggingModal show={showBulkTaggingPopup} onClose={setBulkTaggingPop} checkedUsers={checkedUsers} />}
     {showMultipleOrganizationPopup && <ChangeMultipleOrganizationModal show={showMultipleOrganizationPopup} onClose={setMultipleOrganizationPop} checkedUsers={checkedUsers} />}
@@ -857,9 +866,18 @@ const handleKeyDown = (e) => {
                     </div>
                   </td>
                   <td className="align-middle">{user?.email}</td>
-                  <td className="align-middle">
+                  {/* <td className="align-middle">
                     {user?.organization?.organizationName}
-                  </td>
+                  </td> */}
+                  <td className="align-middle">
+  {user?.organization ? (
+    user.organization.organizationName 
+      ? user.organization.organizationName 
+      : "No Organization1" // Fallback if the organization name is missing
+  ) : (
+    "No Organization2" // Fallback if organization object is missing
+  )}
+</td>
                   <td className="align-middle">
                     
                   {formattedDate}
@@ -884,6 +902,14 @@ const handleKeyDown = (e) => {
           </Table>
         )}
       </Card>
+      </div>
+      {totalPages > 0 && (
+                <PaginationUtils
+                  currentPage={pageNumber}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
     </>
   );
 };

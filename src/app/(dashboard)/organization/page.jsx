@@ -3,18 +3,14 @@
 import { Fragment, useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import { Organizations } from "@/sub-components";
-import PaginationUtils from "@/utils/paginationUtils";
+
 import Spinner from "react-bootstrap/Spinner";
 
 const OrganizationLanding = () => {
   const [isLoading, setLoading] = useState(false);
   const [initialData, setInitialData] = useState([]);
 
-  const handlePageChange = (page) => {    
-    if (page > 0 && page <= totalPages) {
-      setPageNumber(page);
-    }
-  };
+  
   return (
     <Fragment>
       <div className="bg-primary pt-10 pb-21"></div>
@@ -48,13 +44,7 @@ const OrganizationLanding = () => {
                   <Organizations />
                 </Col>
               </Row>
-              {initialData?.length > 0 && (
-                <PaginationUtils
-                  currentPage={pageNumber}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              )}
+              
             </>
           )}
         </>

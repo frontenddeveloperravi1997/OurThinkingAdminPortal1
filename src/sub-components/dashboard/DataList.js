@@ -12,6 +12,7 @@ import { commonQuery,exportAllDomains,exportAllUsers } from "@/app/api/user";
 import CommonModal from './CommonModal';
 import { useRouter } from "next/navigation";
 import { useMediaQuery } from 'react-responsive';
+import PaginationUtils from "@/utils/paginationUtils";
 const DataList = ({ fetchData, pageType }) => {
     const isMobile = useMediaQuery({
         query: '(max-width: 950px)'
@@ -64,6 +65,11 @@ const DataList = ({ fetchData, pageType }) => {
                 return '/';
         }
     };
+
+    const handlePageChange = (page) => {
+      setPageNumber(page);
+  };
+
     const handleDisableEnter = (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -376,6 +382,7 @@ const DataList = ({ fetchData, pageType }) => {
 
     return (
         <>
+        <div className="my-6">        
         <CommonModal 
           show={showActionPop}
           onClose={handleHideActionPop}
@@ -518,11 +525,16 @@ theme="colored"
                     </tr>
                   ))}
                 </tbody> 
-            </Table>{/*)*/}</>)}
-            
-          
-        
+            </Table>{/*)*/}</>)}       
         </Card>
+        </div>
+        {totalPages > 0 && (          
+          <PaginationUtils
+          currentPage={pageNumber}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+              )}
         </>
     );
 };

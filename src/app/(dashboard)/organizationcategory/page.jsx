@@ -6,7 +6,6 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Container, Col, Row } from 'react-bootstrap';
 import DataList from '@/sub-components/dashboard/DataList';
 import { fetchOrganizationCategoryList } from '@/app/api/datalist';
-import PaginationUtils from "@/utils/paginationUtils";
 import Spinner from "react-bootstrap/Spinner";
 
 const OrganizationCategory = () => {
@@ -17,10 +16,6 @@ const OrganizationCategory = () => {
     const [pageSize, setPageSize] = useState(0);
     const [initialData, setInitialData] = useState([]);
     const itemsDisplayed = Math.min(pageNumber * pageSize, totalCount);
-
-    const handlePageChange = (page) => {
-        setPageNumber(page);
-    };
 
     useEffect(() => {
         const fetchOrganizationCategoryData = async () => {
@@ -82,13 +77,6 @@ const OrganizationCategory = () => {
                                     />
                                 </Col>
                             </Row>
-                            {initialData?.length > 0 && (
-                                <PaginationUtils
-                                    currentPage={pageNumber}
-                                    totalPages={totalPages}
-                                    onPageChange={handlePageChange}
-                                />
-                            )}
                         </>
                     )}
                 </>

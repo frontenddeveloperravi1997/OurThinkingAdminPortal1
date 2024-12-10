@@ -4,7 +4,7 @@ import { Fragment, useState, useEffect } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import { Users } from "@/sub-components";
 import { getUsersList } from "@/app/api/user";
-import PaginationUtils from "@/utils/paginationUtils";
+
 import Spinner from "react-bootstrap/Spinner";
 const UserLanding = () => {
   
@@ -12,11 +12,7 @@ const UserLanding = () => {
   const [initialData, setInitialData] = useState([]);
 
 
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setPageNumber(page);
-    }
-  };
+  
 
   return (
     <Fragment>
@@ -52,13 +48,7 @@ const UserLanding = () => {
                   />
                 </Col>
               </Row>
-              {initialData?.length > 0 && (
-                <PaginationUtils
-                  currentPage={pageNumber}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              )}
+              
             </>
           )}
         </>

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { organizationList,organizationCategoryList } from "@/app/api/organization";
 import { useMediaQuery } from "react-responsive";
 import ChangeGroupModal from "./ChangeGroupModal";
+import PaginationUtils from "@/utils/paginationUtils";
 const Organizations = () => {
   const isMobile = useMediaQuery({
     query: "(max-width: 768px)",
@@ -42,6 +43,13 @@ const Organizations = () => {
     status: "",
     name: "",
   });
+
+  const handlePageChange = (page) => {    
+    if (page > 0 && page <= totalPages) {
+      setPageNumber(page);
+    }
+  };
+
   const handleDisableEnter = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -122,7 +130,7 @@ const Organizations = () => {
       }
     };
     fetchTotalPages();
-  }, []);
+  }, [pageNumber]);
 
   //delete org
   const {
@@ -429,6 +437,7 @@ const Organizations = () => {
 
   return (
     <>
+    <div className="my-6">    
       {showDomainPopup && <ChangeGroupModal
         show={showDomainPopup}
         onClose={closeChangeDomainPop}
@@ -598,6 +607,14 @@ const Organizations = () => {
           </Table>
         )}
       </Card>
+      </div>
+      {totalPages > 0 && (
+                <PaginationUtils
+                  currentPage={pageNumber}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
     </>
   );
 };
